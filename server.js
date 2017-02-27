@@ -11,8 +11,8 @@ app.set('view engine', 'hbs');
 
 app.get('/', function (req, res) {
   res.render('index');
-})
+});
 
 app.listen(port, function () {
   console.log('The server has been started!');
-})
+});

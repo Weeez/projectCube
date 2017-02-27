@@ -14,5 +14,5 @@ app.get('/', function (req, res) {
 });
 
 app.listen(port, function () {
-  console.log('The server has been started!');
+  console.log('The server has been started at ' + process.env.IP + " " + process.env.PORT);
 });

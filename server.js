@@ -1,12 +1,18 @@
-var http = require('http');
 var express = require('express');
+var app = express();
+var http = require('http');
 
-var port = process.env.PORT;
+var port = process.env.PORT || 3000;
 
-http.createServer(function (request, response) {
-    response.writeHead(200, {
-        'Content-Type': 'text/plain',
-        'Access-Control-Allow-Origin' : '*'
-    });
-    response.end('Hello World\n');
-}).listen(port);
+app.use(express.static('public'));
+
+app.set('views', './views');
+app.set('view engine', 'hbs');
+
+app.get('/', function (req, res) {
+  res.render('index');
+})
+
+app.listen(port, function () {
+  console.log('The server has been started!');
+})

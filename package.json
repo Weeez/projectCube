@@ -1,7 +1,6 @@
 {
   "name": "projectcube",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
     "body-parser": "^1.16.1",
@@ -30,5 +29,6 @@
   "bugs": {
     "url": "https://github.com/Weeez/projectCube/issues"
   },
-  "homepage": "https://github.com/Weeez/projectCube#readme"
+  "homepage": "https://github.com/Weeez/projectCube#readme",
+  "description": ""
 }

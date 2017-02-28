@@ -8,27 +8,10 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 var port = process.env.PORT || 3000;
+var globalVars = require('./js/global-variables') ;
+require('./js/function-collection');
+var functionCollection = globalVars.functionCollection;
 
-function logError(err, req, res, next){
-  if(!err) return next();
-  console.log(err);
-  next(err);
-}
-
-function errorHandler(err, req, res, next){
-  res.status(500);
-  res.render('error', {error: err});
-  next(err);
-}
-
-function clientErrorHandler(err, req, res, next){
-  if(req.xhr){
-    res.status(500).send({error: 'something failed!'});
-    res.render('error', {error: err});
-  }else{
-    next(err);
-  }
-}
 
 app.use(bodyParser.urlencoded({
   extended: true
@@ -36,9 +19,9 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(methodOverride());
-app.use(logError);
-app.use(clientErrorHandler);
-app.use(errorHandler);
+app.use(globalVars.functionCollection.logError);
+app.use(globalVars.functionCollection.clientErrorHandler);
+app.use(globalVars.functionCollection.errorHandler);
 
 app.set('views', './views');
 app.set('view engine', 'hbs');

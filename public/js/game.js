@@ -20,6 +20,8 @@ camera.position.z = 5;
 
 socket.on('joined', function(obj){
     console.log(obj.asd);
+    
+    socket.emit('joined', {szopki: "szopki"});
 });
 
 var render = function () {

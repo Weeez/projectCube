@@ -10,7 +10,6 @@ var methodOverride = require('method-override');
 var port = process.env.PORT || 3000;
 var globalVars = require('./js/global-variables') ;
 require('./js/function-collection');
-var functionCollection = globalVars.functionCollection;
 
 app.use(bodyParser.urlencoded({
   extended: true

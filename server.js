@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
-// var io = require('socket.io')(http);
+var io = require('socket.io')(http);
 
 // for error handling
 var bodyParser = require('body-parser');
@@ -40,6 +40,16 @@ app.get('/error', function(req, res){
 // app.get('/*', function(req, res){ 
 //   res.redirect('error');
 // });
+
+console.log("what the fuck1");
+io.on('connection', function (socket) {
+  console.log("what the fuck");
+  // socket.on('joined', function(){
+  //   console.log("someone joined");  
+  // });
+  io.emit('joined', {asd: "asd"});
+});
+console.log("what the fuck2");
 
 app.listen(port, function () {
   console.log('The server has been started');

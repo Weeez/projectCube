@@ -36,9 +36,10 @@ app.get('/error', function(req, res){
   res.render('error', {error: 'invalid endpoint!'});
 });
 
-app.get('/*', function(req, res){
-  res.redirect('error');
-});
+//TODO: do something with this
+// app.get('/*', function(req, res){ 
+//   res.redirect('error');
+// });
 
 app.listen(port, function () {
   console.log('The server has been started');

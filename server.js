@@ -12,7 +12,6 @@ var globalVars = require('./js/global-variables') ;
 require('./js/function-collection');
 var functionCollection = globalVars.functionCollection;
 
-
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -32,6 +31,14 @@ app.get('/', function (req, res) {
 
 app.get('/game', function(req, res){
   res.render('game');
+});
+
+app.get('/error', function(req, res){
+  res.render('error', {error: 'invalid endpoint!'});
+});
+
+app.get('/*', function(req, res){
+  res.redirect('error');
 });
 
 app.listen(port, function () {

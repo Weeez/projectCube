@@ -1,7 +1,6 @@
 {
   "name": "projectcube",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "dependencies": {
     "hbs": "^4.0.1",
@@ -24,5 +23,6 @@
   "bugs": {
     "url": "https://github.com/Weeez/projectCube/issues"
   },
-  "homepage": "https://github.com/Weeez/projectCube#readme"
+  "homepage": "https://github.com/Weeez/projectCube#readme",
+  "description": ""
 }

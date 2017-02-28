@@ -1,7 +1,7 @@
 var express = require('express');
 var app = express();
 var http = require('http');
-var io = require('socket.io')(http);
+// var io = require('socket.io')(http);
 
 // for error handling
 var bodyParser = require('body-parser');

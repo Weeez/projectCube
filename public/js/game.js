@@ -4,7 +4,6 @@ var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 var scrollerWidth = 17;
 
-var fieldTableSize= 11;
 var fieldTable = [];
 
 //THREE.js stuffs
@@ -34,7 +33,7 @@ document.addEventListener('keydown', function(e){
     }
 });
 
-function createFieldGeometry(){
+function createFieldGeometry(obj){
     var fieldTexture = new THREE.TextureLoader().load("pics/border.png");
     
     var fieldGeometry = new Geometry();
@@ -57,26 +56,18 @@ function createFieldGeometry(){
     
     var fieldMaterial = new Material({color: "gray" , map: fieldTexture});
     
-    return new Mesh(fieldGeometry, fieldMaterial);
+    var fieldMesh = new Mesh(fieldGeometry, fieldMaterial);
+    
+    fieldMesh.position.x = obj.x;
+    fieldMesh.position.z = obj.z;
+    
+    return fieldMesh;
 }
 
 function generateFieldTable(){
-    var posX = (-1*(Math.floor(fieldTableSize/2)))-0.5;
-    var posZ = (-1*(Math.floor(fieldTableSize/2)))+0.5;
-    for(var i = 0; i < fieldTableSize; i++){
-        var row = [];
-        for(var j = 0; j < fieldTableSize; j++){
-            var field = createFieldGeometry();
-            field.position.x = posX+i;
-            field.position.z = posZ+j;
-            row.push(field);
-        }
-        fieldTable.push(row);
-    }
-    
     for(var i = 0; i < fieldTable.length; i++){
         for(var j = 0; j < fieldTable[i].length; j++){
-            scene.add(fieldTable[i][j]);
+            scene.add(createFieldGeometry(fieldTable[i][j]));
         }
     }
 }
@@ -89,6 +80,7 @@ function addCubeGeometry(obj){
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
+    fieldTable = obj.fieldTable;
     socket.emit('joined', {socketId: socket.id});
     
     camera.position.z = 5;

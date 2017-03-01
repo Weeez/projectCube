@@ -48,13 +48,41 @@ var server = app.listen(port, function () {
   console.log('The server has been started');
 });
 
+
+//game logic
+var fieldTableSize = 101;
+var fieldTable = [];
+
+function generateFieldTablePositions(){
+    var posX = (-1*(Math.floor(fieldTableSize/2)))-0.5;
+    var posZ = (-1*(Math.floor(fieldTableSize/2)))+0.5;
+    for(var i = 0; i < fieldTableSize; i++){
+        var row = [];
+        for(var j = 0; j < fieldTableSize; j++){
+            var field = {};
+            field.x = posX+i;
+            field.z = posZ+j;
+            row.push(field);
+        }
+        fieldTable.push(row);
+    }
+    
+    // return fieldTable;
+}
+
+function init(){
+  generateFieldTablePositions();  
+}
+
+init();
+
 var io = require('socket.io').listen(server);
 
 console.log("what the fuck1");
 io.on('connection', function (socket) {
   console.log("A player joined to the game");
   
-  io.emit('joined', {asd: "asd"});
+  io.emit('joined', {asd: "asd", fieldTable: fieldTable});
   socket.on('joined', function(obj){
     console.log("A player joined to the game with the following id: " + obj.socketId);
   });

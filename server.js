@@ -52,11 +52,11 @@ var io = require('socket.io').listen(server);
 
 console.log("what the fuck1");
 io.on('connection', function (socket) {
-  console.log("what the fuck");
+  console.log("A player joined to the game");
   
   io.emit('joined', {asd: "asd"});
   socket.on('joined', function(obj){
-    console.log("fasza" + obj.szopki);
+    console.log("A player joined to the game with the following id: " + obj.socketId);
   });
 });
 console.log("what the fuck2");

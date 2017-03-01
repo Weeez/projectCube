@@ -81,7 +81,6 @@ function generateFieldTable(){
     }
 }
 
-
 function addCubeGeometry(obj){
     var geometry = new BoxGeometry(obj.x, obj.y, obj.z);
     var material = new Material({color: obj.color, transparent: true, opacity: 0.2});

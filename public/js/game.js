@@ -4,7 +4,7 @@ var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 var scrollerWidth = 17;
 
-var fieldTableSize= 5;
+var fieldTableSize= 100;
 var fieldTable = [];
 
 //THREE.js stuffs
@@ -79,6 +79,7 @@ function generateFieldTable(){
         }
     }
 }
+
 
 function addCubeGeometry(obj){
     var geometry = new BoxGeometry(obj.x, obj.y, obj.z);

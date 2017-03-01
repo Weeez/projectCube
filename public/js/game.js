@@ -4,7 +4,7 @@ var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 var scrollerWidth = 17;
 
-var fieldTableSize= 100;
+var fieldTableSize= 11;
 var fieldTable = [];
 
 //THREE.js stuffs
@@ -55,7 +55,7 @@ function createFieldGeometry(){
     fieldGeometry.faceVertexUvs[0].push([fieldUvs[0], fieldUvs[1], fieldUvs[3]]);
     fieldGeometry.faceVertexUvs[0].push([fieldUvs[1], fieldUvs[2], fieldUvs[3]]);
     
-    var fieldMaterial = new Material({color: "gray", map: fieldTexture});
+    var fieldMaterial = new Material({color: "gray" , map: fieldTexture});
     
     return new Mesh(fieldGeometry, fieldMaterial);
 }
@@ -73,6 +73,7 @@ function generateFieldTable(){
         }
         fieldTable.push(row);
     }
+    
     for(var i = 0; i < fieldTable.length; i++){
         for(var j = 0; j < fieldTable[i].length; j++){
             scene.add(fieldTable[i][j]);

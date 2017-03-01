@@ -64,7 +64,6 @@ function createFieldGeometry(obj){
     return fieldMesh;
 }
 
-
 function generateFieldTable(){
     for(var i = 0; i < fieldTable.length; i++){
         for(var j = 0; j < fieldTable[i].length; j++){

@@ -1,6 +1,5 @@
 var socket = io();
 
-
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
 var scrollerWidth = 17;
@@ -67,7 +66,8 @@ document.addEventListener('keydown', function(e){
 // }
 
 function createFieldGeometry(obj){
-    var fieldTexture = new THREE.TextureLoader().load("pics/border.png");
+    // var fieldTexture = new THREE.TextureLoader().load("pics/border.png");
+    var fieldTexture = new THREE.ImageUtils.loadTexture("pics/border.png");
     
     var fieldGeometry = new BufferGeometry();
     
@@ -85,6 +85,13 @@ function createFieldGeometry(obj){
         0.0, 0.0, -1.0
     ]);
     
+    var uvs = new Float32Array([
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    ]);
+    
     // fieldGeometry.faces.push(new Face3(0,1,3));
     // fieldGeometry.faces.push(new Face3(1,2,3));
     
@@ -96,11 +103,12 @@ function createFieldGeometry(obj){
     // fieldGeometry.faceVertexUvs[0].push([fieldUvs[0], fieldUvs[1], fieldUvs[3]]);
     // fieldGeometry.faceVertexUvs[0].push([fieldUvs[1], fieldUvs[2], fieldUvs[3]]);
     
-    var colors = []
+    // var colors = []
     
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 3));
     
-    var fieldMaterial = new Material({color: 0xd3d3d3 /*, map: fieldTexture*/});
+    var fieldMaterial = new THREE.MeshPhongMaterial({color: 0xd3d3d3 /*, map: fieldTexture*/});
     
     var fieldMesh = new Mesh(fieldGeometry, fieldMaterial);
     
@@ -125,6 +133,70 @@ function addCubeGeometry(obj){
     return cube;
 }
 
+function shaderTest(){
+    var testGeometry = new BufferGeometry();
+    
+    var testVertices = new Float32Array([
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        1.0, 0.5, 0.0
+    ]);
+    
+    var vertexShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('vertexShader').textContent;
+
+    var testMaterial = new THREE.ShaderMaterial({
+          uniforms: {
+            time: { value: 1.0},
+            resolution: { value: new THREE.Vector2()}
+        },
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+    });
+    // testGeometry.attributes = {
+    //     vertexOpacity: {value: []}
+    // };
+    
+    // var testMaterial = new THREE.ShaderMaterial({
+    //     uniforms: {
+    //         time: { value: 1.0},
+    //         resolution: { value: new THREE.Vector2()}
+    //     },
+    //     // attributes: {
+    //     //     vertexOpacity: {value: []}
+    //     // },
+    //     vertexShader: document.getElementById('vertexShader').textContent,
+    //     fragmentShader: document.getElementById('fragmentShader').textContent
+    // });
+    
+    testGeometry.addAttribute('position', new THREE.BufferAttribute(testVertices, 3));
+    
+    return new Mesh(testGeometry, testMaterial);
+    
+    /*
+        var vertexShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('fragmentShader').textContent;
+    var uniforms = {
+        topColor: {type: "c", value: new THREE.Color(0x0077ff)},
+        bottomColor: {type: "c", value: new THREE.Color(0xffffff)},
+        offset: {type: "f", value: 400},
+        exponent: {type: "f", value: 0.6}
+    };
+    uniforms.topColor.value.copy(skylight.color);
+
+    var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
+    var skyMat = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader,
+        side: THREE.BackSide
+    });
+
+    var sky = new THREE.Mesh(skyGeo, skyMat);
+    scene.add(sky);
+    */
+}
+
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     fieldTable = obj.fieldTable;
     socket.emit('joined', {socketId: socket.id});
@@ -140,8 +212,11 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     scene.add(addCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
     scene.add(addCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
 
-    generateFieldTable();
+    // generateFieldTable();
     // scene.add(addCubeGeometry());
+    
+    
+    scene.add(shaderTest());
     
     render();
 });

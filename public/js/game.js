@@ -139,17 +139,19 @@ function shaderTest(){
     var testVertices = new Float32Array([
         0.0, 0.0, 0.0,
         1.0, 0.0, 0.0,
-        1.0, 0.5, 0.0
+        0.5, 1.0, 0.0
     ]);
     
+    testGeometry.addAttribute('position', new THREE.BufferAttribute(testVertices, 3));
+    
     var vertexShader = document.getElementById('vertexShader').textContent;
-    var fragmentShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('fragmentShader').textContent;
 
     var testMaterial = new THREE.ShaderMaterial({
-          uniforms: {
-            time: { value: 1.0},
-            resolution: { value: new THREE.Vector2()}
-        },
+        // uniforms: {
+        //     time: { value: 1.0},
+        //     resolution: { value: new THREE.Vector2()}
+        // },
         vertexShader: vertexShader,
         fragmentShader: fragmentShader
     });
@@ -169,7 +171,7 @@ function shaderTest(){
     //     fragmentShader: document.getElementById('fragmentShader').textContent
     // });
     
-    testGeometry.addAttribute('position', new THREE.BufferAttribute(testVertices, 3));
+    
     
     return new Mesh(testGeometry, testMaterial);
     
@@ -203,6 +205,7 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     
     camera.position.z = 5;
     camera.position.y = 5;
+    camera.position.x = -1;
     camera.lookAt(new Vector3(0,0,0));
 
     renderer.setSize(window.innerWidth - scrollerWidth, window.innerHeight - scrollerWidth);

@@ -151,11 +151,22 @@ function shaderWtf(){
         fragmentShader: fragmentShader
     });
     
-    var geometry = new THREE.BoxBufferGeometry(100, 100, 100, 10, 10, 10);
+    var geometry = new BufferGeometry();
+    
+    var vertices = new Float32Array([
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        0.5, 1.0, 0.0,
+    ]);
+    
+    geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
     
     var mesh = new THREE.Mesh(geometry,material);
-    mesh.position.z = -200;
-    mesh.position.y = -100;
+    // mesh.position.z = -200;
+    // mesh.position.y = -100;
+    mesh.position.z = 0;
+    mesh.position.y = 0;
+    
     scene.add(mesh);
 }
 
@@ -169,7 +180,6 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     camera.lookAt(new Vector3(0,0,0));
 
     // renderer.setSize(window.innerWidth - scrollerWidth, window.innerHeight - scrollerWidth);
-
 
     document.body.appendChild(renderer.domElement);
 

@@ -8,7 +8,8 @@ var fieldTable = [];
 
 //THREE.js stuffs
 var scene = new THREE.Scene();
-var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 300, 10000);
+// var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -141,98 +142,6 @@ function addAxisCubeGeometry(obj){
 
 var tmp = undefined;
 
-function shaderTest(){
-    var light1 = new THREE.DirectionalLight( 0xffffff, 0.5 );
-	light1.position.set( 1, 1, 1 );
-	scene.add( light1 );
-    
-    var testGeometry = new BufferGeometry();
-    
-    var testVertices = new Float32Array([
-        0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0,
-        0.5, 1.0, 0.0
-    ]);
-    
-    var testNormals = new Float32Array([
-        
-        
-        
-    ]);
-    
-    testGeometry.addAttribute('position', new THREE.BufferAttribute(testVertices, 3));
-    
-    var vertexShader = document.getElementById('vertexShader').textContent;
-    var fragmentShader = document.getElementById('fragmentShader').textContent;
-
-    var testMaterial = new THREE.ShaderMaterial({
-        // uniforms: {
-        //     time: { value: 1.0},
-        //     resolution: { value: new THREE.Vector2()}
-        // },
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader
-    });
-    
-    
-    // testGeometry.attributes = {
-    //     vertexOpacity: {value: []}
-    // };
-    
-    // var testMaterial = new THREE.ShaderMaterial({
-    //     uniforms: {
-    //         time: { value: 1.0},
-    //         resolution: { value: new THREE.Vector2()}
-    //     },
-    //     // attributes: {
-    //     //     vertexOpacity: {value: []}
-    //     // },
-    //     vertexShader: document.getElementById('vertexShader').textContent,
-    //     fragmentShader: document.getElementById('fragmentShader').textContent
-    // });
-    
-    var light = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(light);
-    
-    var shaderMaterial = new THREE.ShaderMaterial({
-		vertexShader:  vertexShader,
-		fragmentShader: fragmentShader
-	});
-	
-	var shaderGeometry = new THREE.BoxBufferGeometry(100, 100, 100, 10, 10, 10);
-	// set up the sphere vars
-	
-	// create a new mesh with sphere geometry -
-	// we will cover the sphereMaterial next!
-	tmp = new THREE.Mesh(shaderGeometry, shaderMaterial);
-	return tmp;
-    
-    
-    // return new Mesh(testGeometry, testMaterial);
-    
-    /*
-        var vertexShader = document.getElementById('vertexShader').textContent;
-    var fragmentShader = document.getElementById('fragmentShader').textContent;
-    var uniforms = {
-        topColor: {type: "c", value: new THREE.Color(0x0077ff)},
-        bottomColor: {type: "c", value: new THREE.Color(0xffffff)},
-        offset: {type: "f", value: 400},
-        exponent: {type: "f", value: 0.6}
-    };
-    uniforms.topColor.value.copy(skylight.color);
-
-    var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
-    var skyMat = new THREE.ShaderMaterial({
-        uniforms: uniforms,
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        side: THREE.BackSide
-    });
-
-    var sky = new THREE.Mesh(skyGeo, skyMat);
-    scene.add(sky);
-    */
-}
 function shaderWtf(){
     var vertexShader = document.getElementById('vertexShader').textContent;
     var fragmentShader = document.getElementById('fragmentShader').textContent;
@@ -245,7 +154,7 @@ function shaderWtf(){
     var geometry = new THREE.BoxBufferGeometry(100, 100, 100, 10, 10, 10);
     
     var mesh = new THREE.Mesh(geometry,material);
-    mesh.position.z = -1000;
+    mesh.position.z = -200;
     mesh.position.y = -100;
     scene.add(mesh);
 }
@@ -254,10 +163,10 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     fieldTable = obj.fieldTable;
     socket.emit('joined', {socketId: socket.id});
     
-    // camera.position.z = 5;
-    // camera.position.y = 5;
-    // camera.position.x = -1;
-    // camera.lookAt(new Vector3(0,0,0));
+    camera.position.z = 5;
+    camera.position.y = 5;
+    camera.position.x = -1;
+    camera.lookAt(new Vector3(0,0,0));
 
     // renderer.setSize(window.innerWidth - scrollerWidth, window.innerHeight - scrollerWidth);
 

@@ -1,12 +1,16 @@
-<script src="js/three.min.js"></script>
+<script src="js/libs/three.min.js"></script>
 <script src="js/game.js"></script>
 <script type="x-shader/x-vertex" id="vertexShader">
-    varying vec4 in_Position;
+    // varying vec4 in_Position;
     
     void main(){
         // gl_Position = in_Position;
-        gl_Position = vec4(in_Position.xyz, 1.0);
+        // gl_Position = vec4(in_Position.xyz, 1.0);
         // gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+        
+        // gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+        vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+        gl_Position = projectionMatrix * modelViewPosition;
     }
 </script>
 
@@ -14,7 +18,11 @@
     // varying vec4 in_Position;
 
     void main(){
+        // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        // gl_FragColor 	= vec4(1.0,0.0,1.0,1.0);
+        
         gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+
     }
 </script>
 {{!--<script src="js/libs/require.js"></script>--}}

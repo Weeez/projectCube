@@ -166,6 +166,7 @@ function shaderWtf(){
     // mesh.position.y = -100;
     mesh.position.z = 0;
     mesh.position.y = 0;
+    mesh.position.x = 0;
     
     scene.add(mesh);
 }

@@ -170,6 +170,7 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
 
     // renderer.setSize(window.innerWidth - scrollerWidth, window.innerHeight - scrollerWidth);
 
+
     document.body.appendChild(renderer.domElement);
 
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));

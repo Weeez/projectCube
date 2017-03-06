@@ -148,15 +148,17 @@ function shaderWtf(){
     
     var material = new THREE.ShaderMaterial({
         vertexShader: vertexShader,
-        fragmentShader: fragmentShader
+        fragmentShader: fragmentShader,
+        side: THREE.DoubleSide
     });
     
     var geometry = new BufferGeometry();
     
     var vertices = new Float32Array([
-        0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0,
-        0.5, 1.0, 0.0,
+        -0.5, 0.0, 0.0,
+        0.5, 0.0, 0.0,
+        0.0, 1.0, 0.0
+        
     ]);
     
     geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
@@ -167,6 +169,8 @@ function shaderWtf(){
     mesh.position.z = 0;
     mesh.position.y = 0;
     mesh.position.x = 0;
+    
+    tmp = mesh;
     
     scene.add(mesh);
 }
@@ -202,9 +206,8 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
 var render = function () {
     requestAnimationFrame(render);
 
-    // tmp.rotation.x += 10;
-
     renderer.render(scene, camera);
+    tmp.rotation.y += 0.01;
 };
 
 

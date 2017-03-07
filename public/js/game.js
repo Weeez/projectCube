@@ -80,7 +80,6 @@ window.addEventListener("keydown", function(e){
     }
 });
 
-
 function generateFieldTable(){
     var tmpMesh = createFieldGeometry();
     

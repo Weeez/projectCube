@@ -11,7 +11,7 @@ var fieldTable = [];
 //THREE.js stuffs
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 27, window.innerWidth / window.innerHeight, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -43,11 +43,16 @@ var ShaderMaterial = THREE.ShaderMaterial;
 //         */
 //     }
 // });
-
 function generateFieldTable(){
     var tmpMesh = createFieldGeometry();
+    
+    var counter = 0;
+    
     for(var i = 0; i < fieldTable.length; i++){
         for(var j = 0; j < fieldTable[i].length; j++){
+            
+            ++counter;
+            
             var element = fieldTable[i][j];
             var tmp_Mesh = tmpMesh.clone();
             tmp_Mesh.position.x = element.position.x;
@@ -57,6 +62,8 @@ function generateFieldTable(){
             // scene.add(createFieldGeometry(fieldTable[i][j]));
         }
     }
+    
+    console.log(counter);
 }
 
 function addAxisCubeGeometry(obj){
@@ -145,7 +152,8 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     init();
     
     camera.position.z = 5;
-    camera.position.y = 5;
+    // camera.position.y = 5;
+    camera.position.y = 20;
     camera.position.x = -1;
     camera.lookAt(new Vector3(0,0,0));
 

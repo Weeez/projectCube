@@ -56,9 +56,13 @@ var fieldTable = [];
 function generateFieldTablePositions(){
     var posX = (-1*(Math.floor(fieldTableSize/2)))-0.5;
     var posZ = (-1*(Math.floor(fieldTableSize/2)))+0.5;
+    
+    var counter = 0;
+    
     for(var i = 0; i < fieldTableSize; i++){
         var row = [];
         for(var j = 0; j < fieldTableSize; j++){
+            ++counter;
             var field = {};
             field.position = {
               x: posX+i,
@@ -70,6 +74,7 @@ function generateFieldTablePositions(){
         fieldTable.push(row);
     }
     
+    console.log(counter);
     // return fieldTable;
 }
 

@@ -167,5 +167,4 @@ var render = function () {
     stats.update();
 };
 
-
 		

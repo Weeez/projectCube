@@ -31,19 +31,56 @@ var BoxGeometry = THREE.BoxGeometry;
 var BufferGeometry = THREE.BufferGeometry;
 var ShaderMaterial = THREE.ShaderMaterial;
 
-// document.addEventListener('keyup', function(e){
-    
-// });
-// document.addEventListener('keydown', function(e){
-//     if(e.keyCode == 38){
-//         camera.position.y =  5*Math.sin(3.14/10);
-//         camera.position.z =  5*Math.cos(3.14/10);
-//         /*
-//             kamera x koordinátája: kocka x pozíciója + sugár * sin ( fordulás szöge)
-//             kamera z koordinátája: kocka z pozíciója + sugár * cos ( fordulás szöge)
-//         */
-//     }
-// });
+var keyPressed = {};
+var keyEventDatas = {
+    r: 5,
+    angle: 0,
+    newAngle: (Math.PI / 15)
+}
+
+var origo = new Vector3(0,0,0);
+
+document.addEventListener('keydown', function(e){
+    keyPressed[e.keyCode] = true;
+}, false);
+
+
+document.addEventListener('keyup', function(e){
+    keyPressed[e.keyCode] = false;
+}, false);
+
+window.addEventListener("keydown", function(e){
+    if([37,38,39,40].indexOf(e.keyCode) > -1){
+
+        switch(e.keyCode){
+            case 37:
+                keyEventDatas.angle += keyEventDatas.newAngle;
+                
+                var angle = keyEventDatas.angle;
+                var r = keyEventDatas.r;
+                
+                camera.position.x = r * Math.sin(angle);
+                camera.position.z = r * Math.cos(angle);
+                camera.lookAt(origo);
+                break;
+            case 39:
+                keyEventDatas.angle -= keyEventDatas.newAngle;
+                
+                var angle = keyEventDatas.angle;
+                var r = keyEventDatas.r;
+                
+                camera.position.x = r * Math.sin(angle);
+                camera.position.z = r * Math.cos(angle);
+                camera.lookAt(origo);
+                break;
+            default: 
+                break;
+        }
+        e.preventDefault();
+    }
+});
+
+
 function generateFieldTable(){
     var tmpMesh = createFieldGeometry();
     
@@ -161,10 +198,20 @@ function init(){
     stats = new Stats();
     container.appendChild(stats.dom);
     
+    scene.add(new THREE.AmbientLight( 0x444444 ) );
+    var light1 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    light1.position.set( 1, 1, 1 );
+	scene.add( light1 );
+	
+	var light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+	light2.position.set( 0, -1, 0 );
+	scene.add( light2 );
+    
+    
     camera.position.z = 5;
     camera.position.y = 4;
     camera.position.x = -1;
-    camera.lookAt(new Vector3(0,0,0));
+    camera.lookAt(origo);
 
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));

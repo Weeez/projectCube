@@ -26,6 +26,7 @@ var Geometry = THREE.Geometry;
 var Face3 = THREE.Face3;
 var BoxGeometry = THREE.BoxGeometry;
 var BufferGeometry = THREE.BufferGeometry;
+var ShaderMaterial = THREE.ShaderMaterial;
 
 // document.addEventListener('keyup', function(e){
     
@@ -72,58 +73,7 @@ var BufferGeometry = THREE.BufferGeometry;
 //     return fieldMesh;
 // }
 
-function createFieldGeometry(obj){
-    // var fieldTexture = new THREE.TextureLoader().load("pics/border.png");
-    var fieldTexture = new THREE.ImageUtils.loadTexture("pics/border.png");
-    
-    var fieldGeometry = new BufferGeometry();
-    
-    // fieldGeometry.vertices.push(new Vector3(0,0,0));
-    // fieldGeometry.vertices.push(new Vector3(1,0,0));
-    // fieldGeometry.vertices.push(new Vector3(1,0,-1));
-    // fieldGeometry.vertices.push(new Vector3(0,0,-1));
-    var vertices = new Float32Array([
-        0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0,
-        0.0, 0.0, -1.0,
-        
-        1.0, 0.0, 0.0,
-        1.0, 0.0, -1.0,
-        0.0, 0.0, -1.0
-    ]);
-    
-    var uvs = new Float32Array([
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0
-    ]);
-    
-    // fieldGeometry.faces.push(new Face3(0,1,3));
-    // fieldGeometry.faces.push(new Face3(1,2,3));
-    
-    // var fieldUvs = [];
-    // fieldUvs.push(new Vector2(0.0, 0.0));
-    // fieldUvs.push(new Vector2(1.0, 0.0));
-    // fieldUvs.push(new Vector2(1.0, 1.0));
-    // fieldUvs.push(new Vector2(0.0, 1.0));
-    // fieldGeometry.faceVertexUvs[0].push([fieldUvs[0], fieldUvs[1], fieldUvs[3]]);
-    // fieldGeometry.faceVertexUvs[0].push([fieldUvs[1], fieldUvs[2], fieldUvs[3]]);
-    
-    // var colors = []
-    
-    fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 3));
-    
-    var fieldMaterial = new THREE.MeshPhongMaterial({color: 0xd3d3d3 /*, map: fieldTexture*/});
-    
-    var fieldMesh = new Mesh(fieldGeometry, fieldMaterial);
-    
-    fieldMesh.position.x = obj.x;
-    fieldMesh.position.z = obj.z;
-    
-    return fieldMesh;
-}
+
 
 function generateFieldTable(){
     for(var i = 0; i < fieldTable.length; i++){
@@ -165,13 +115,43 @@ function shaderWtf(){
     var mesh = new THREE.Mesh(geometry,material);
     // mesh.position.z = -200;
     // mesh.position.y = -100;
-    mesh.position.z = 0;
-    mesh.position.y = 0;
+    
     mesh.position.x = 0;
+    mesh.position.y = 0;
+    mesh.position.z = 0;
     
     tmp = mesh;
     
     scene.add(mesh);
+}
+
+function createFieldGeometry(obj){
+    var vertexShader = document.getElementById('vertexShader').textContent;
+    var fragmentShader = document.getElementById('fragmentShader').textContent;
+    
+    var fieldGeometry = new BufferGeometry();
+    var fieldMaterial = new ShaderMaterial({
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+    });
+    
+    var vertices = new Float32Array([
+        0.0, 0.0, 0.0,
+        1.0, 0.0, 0.0,
+        0.0, 0.0, -1.0,
+        
+        1.0, 0.0, 0.0,
+        1.0, 0.0, -1.0,
+        0.0, 0.0, -1.0
+    ]);
+    
+    fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    
+    var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
+    tmpGeo.position.x = obj.position.x;
+    tmpGeo.position.y = obj.position.y;
+    tmpGeo.position.z = obj.position.z;
+    return tmpGeo;
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
@@ -191,13 +171,13 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
 
-    // generateFieldTable();
+    generateFieldTable();
     // scene.add(addCubeGeometry());
     
     
     // scene.add(shaderTest());
     
-    shaderWtf();
+    // shaderWtf();
     
     render();
 });
@@ -206,7 +186,7 @@ var render = function () {
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);
-    tmp.rotation.y += 0.01;
+    // tmp.rotation.y += 0.01;
 };
 
 

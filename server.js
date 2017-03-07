@@ -50,7 +50,7 @@ var server = app.listen(port, function () {
 
 
 //game logic
-var fieldTableSize = 5;
+var fieldTableSize = 1000;
 var fieldTable = [];
 
 function generateFieldTablePositions(){
@@ -60,8 +60,11 @@ function generateFieldTablePositions(){
         var row = [];
         for(var j = 0; j < fieldTableSize; j++){
             var field = {};
-            field.x = posX+i;
-            field.z = posZ+j;
+            field.position = {
+              x: posX+i,
+              y: 0,
+              z: posZ+j
+            };
             row.push(field);
         }
         fieldTable.push(row);

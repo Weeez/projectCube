@@ -7,6 +7,7 @@ var scrollerWidth = 5;
 var container, stats;
 
 var fieldTable = [];
+var fieldElements = [];
 
 //THREE.js stuffs
 var scene = new THREE.Scene();
@@ -59,6 +60,7 @@ function generateFieldTable(){
             tmp_Mesh.position.y = element.position.y;
             tmp_Mesh.position.z = element.position.z;
             scene.add(tmp_Mesh);
+            fieldElements.push(tmp_Mesh);
             // scene.add(createFieldGeometry(fieldTable[i][j]));
         }
     }
@@ -68,7 +70,7 @@ function generateFieldTable(){
 
 function addAxisCubeGeometry(obj){
     var geometry = new BoxGeometry(obj.x, obj.y, obj.z);
-    var material = new Material({color: obj.color, transparent: true, opacity: 0.2});
+    var material = new Material({color: obj.color, transparent: true, opacity: 0.5});
     var cube = new Mesh(geometry, material);
     return cube;
 }
@@ -117,6 +119,7 @@ function createFieldGeometry(){
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
         vertexColors: THREE.VertexColors
+        // side: THREE.DoubleSide
     });
     
     var vertices = new Float32Array([
@@ -157,16 +160,8 @@ function init(){
     
     stats = new Stats();
     container.appendChild(stats.dom);
-}
-
-socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
-    fieldTable = obj.fieldTable;
-    socket.emit('joined', {socketId: socket.id});
-    
-    init();
     
     camera.position.z = 5;
-    // camera.position.y = 5;
     camera.position.y = 4;
     camera.position.x = -1;
     camera.lookAt(new Vector3(0,0,0));
@@ -176,6 +171,13 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
 
     generateFieldTable();
+}
+
+socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
+    fieldTable = obj.fieldTable;
+    socket.emit('joined', {socketId: socket.id});
+    
+    init();
     
     // shaderWtf();
     
@@ -187,4 +189,8 @@ var render = function () {
 
     renderer.render(scene, camera);
     stats.update();
+    
+    // for(var i = 0; i < fieldElements.length; i++){
+    //     fieldElements[i].rotation.z += 0.05;
+    // }
 };

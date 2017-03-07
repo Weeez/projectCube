@@ -11,7 +11,7 @@ var fieldTable = [];
 //THREE.js stuffs
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
-var camera = new THREE.PerspectiveCamera( 27, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -115,7 +115,8 @@ function createFieldGeometry(){
     var fieldGeometry = new BufferGeometry();
     var fieldMaterial = new ShaderMaterial({
         vertexShader: vertexShader,
-        fragmentShader: fragmentShader
+        fragmentShader: fragmentShader,
+        vertexColors: THREE.VertexColors
     });
     
     var vertices = new Float32Array([
@@ -128,7 +129,20 @@ function createFieldGeometry(){
         0.0, 0.0, -1.0
     ]);
     
+    var colors = new Float32Array([
+        1.0, 0.0, 0.0,
+        1.0, 1.0, 0.0,
+        0.0, 0.0, 1.0,
+        
+        1.0, 1.0, 0.0,
+        1.0, 1.0, 1.0,
+        0.0, 0.0, 1.0
+    ]);
+    
+    // function disposeArray() { this.array = null; }
+    
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
     
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
     // tmpGeo.position.x = obj.position.x;
@@ -153,7 +167,7 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     
     camera.position.z = 5;
     // camera.position.y = 5;
-    camera.position.y = 20;
+    camera.position.y = 4;
     camera.position.x = -1;
     camera.lookAt(new Vector3(0,0,0));
 

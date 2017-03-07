@@ -2,7 +2,9 @@ var socket = io();
 
 var windowWidth = window.innerWidth;
 var windowHeight = window.innerHeight;
-var scrollerWidth = 17;
+var scrollerWidth = 5;
+
+var container, stats;
 
 var fieldTable = [];
 
@@ -14,9 +16,9 @@ var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
 renderer.setClearColor(0x99bffc);
-renderer.setSize(windowWidth, windowHeight);
-//     renderer.gammaInput = true;
-// 	renderer.gammaOutput = true;
+renderer.setSize(windowWidth-scrollerWidth, windowHeight-scrollerWidth);
+renderer.gammaInput = true;
+renderer.gammaOutput = true;
 
 var Mesh = THREE.Mesh;
 var Material = THREE.MeshBasicMaterial;
@@ -42,43 +44,17 @@ var ShaderMaterial = THREE.ShaderMaterial;
 //     }
 // });
 
-// function createFieldGeometry(obj){
-//     var fieldTexture = new THREE.TextureLoader().load("pics/border.png");
-    
-//     var fieldGeometry = new Geometry();
-    
-//     fieldGeometry.vertices.push(new Vector3(0,0,0));
-//     fieldGeometry.vertices.push(new Vector3(1,0,0));
-//     fieldGeometry.vertices.push(new Vector3(1,0,-1));
-//     fieldGeometry.vertices.push(new Vector3(0,0,-1));
-    
-//     fieldGeometry.faces.push(new Face3(0,1,3));
-//     fieldGeometry.faces.push(new Face3(1,2,3));
-    
-//     var fieldUvs = [];
-//     fieldUvs.push(new Vector2(0.0, 0.0));
-//     fieldUvs.push(new Vector2(1.0, 0.0));
-//     fieldUvs.push(new Vector2(1.0, 1.0));
-//     fieldUvs.push(new Vector2(0.0, 1.0));
-//     fieldGeometry.faceVertexUvs[0].push([fieldUvs[0], fieldUvs[1], fieldUvs[3]]);
-//     fieldGeometry.faceVertexUvs[0].push([fieldUvs[1], fieldUvs[2], fieldUvs[3]]);
-    
-//     var fieldMaterial = new Material({color: "gray" , map: fieldTexture});
-    
-//     var fieldMesh = new Mesh(fieldGeometry, fieldMaterial);
-    
-//     fieldMesh.position.x = obj.x;
-//     fieldMesh.position.z = obj.z;
-    
-//     return fieldMesh;
-// }
-
-
-
 function generateFieldTable(){
+    var tmpMesh = createFieldGeometry();
     for(var i = 0; i < fieldTable.length; i++){
         for(var j = 0; j < fieldTable[i].length; j++){
-            scene.add(createFieldGeometry(fieldTable[i][j]));
+            var element = fieldTable[i][j];
+            var tmp_Mesh = tmpMesh.clone();
+            tmp_Mesh.position.x = element.position.x;
+            tmp_Mesh.position.y = element.position.y;
+            tmp_Mesh.position.z = element.position.z;
+            scene.add(tmp_Mesh);
+            // scene.add(createFieldGeometry(fieldTable[i][j]));
         }
     }
 }
@@ -125,7 +101,7 @@ function shaderWtf(){
     scene.add(mesh);
 }
 
-function createFieldGeometry(obj){
+function createFieldGeometry(){
     var vertexShader = document.getElementById('vertexShader').textContent;
     var fragmentShader = document.getElementById('fragmentShader').textContent;
     
@@ -148,34 +124,36 @@ function createFieldGeometry(obj){
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
     
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
-    tmpGeo.position.x = obj.position.x;
-    tmpGeo.position.y = obj.position.y;
-    tmpGeo.position.z = obj.position.z;
+    // tmpGeo.position.x = obj.position.x;
+    // tmpGeo.position.y = obj.position.y;
+    // tmpGeo.position.z = obj.position.z;
     return tmpGeo;
+}
+
+function init(){
+    container = document.getElementById('container');
+    container.appendChild(renderer.domElement);
+    
+    stats = new Stats();
+    container.appendChild(stats.dom);
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     fieldTable = obj.fieldTable;
     socket.emit('joined', {socketId: socket.id});
     
+    init();
+    
     camera.position.z = 5;
     camera.position.y = 5;
     camera.position.x = -1;
     camera.lookAt(new Vector3(0,0,0));
-
-    // renderer.setSize(window.innerWidth - scrollerWidth, window.innerHeight - scrollerWidth);
-
-    document.body.appendChild(renderer.domElement);
 
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
 
     generateFieldTable();
-    // scene.add(addCubeGeometry());
-    
-    
-    // scene.add(shaderTest());
     
     // shaderWtf();
     
@@ -186,7 +164,7 @@ var render = function () {
     requestAnimationFrame(render);
 
     renderer.render(scene, camera);
-    // tmp.rotation.y += 0.01;
+    stats.update();
 };
 
 

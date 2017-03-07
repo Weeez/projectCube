@@ -188,5 +188,3 @@ var render = function () {
     renderer.render(scene, camera);
     stats.update();
 };
-
-		

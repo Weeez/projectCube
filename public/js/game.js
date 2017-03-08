@@ -12,7 +12,7 @@ var fieldElements = [];
 //THREE.js stuffs
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
-var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 30 );
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1,20 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -52,8 +52,7 @@ document.addEventListener('keyup', function(e){
 }, false);
 
 window.addEventListener("keydown", function(e){
-        e.preventDefault();
-    
+    if(e.keyCode != 116) e.preventDefault();
 });
 
 function keyLogic(){

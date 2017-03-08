@@ -66,7 +66,6 @@ function keyLogic(){
     
     */
     
-    
     if(keyPressed[37]){ // left
         keyEventDatas.horizontalAngle += keyEventDatas.newHorizontalAngle;
                 

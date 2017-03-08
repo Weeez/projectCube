@@ -34,8 +34,10 @@ var ShaderMaterial = THREE.ShaderMaterial;
 var keyPressed = {};
 var keyEventDatas = {
     r: 5,
-    angle: 0,
-    newAngle: (Math.PI / 150)
+    horizontalAngle: Math.PI,
+    newHorizontalAngle: (Math.PI / 100),
+    verticalAngle: Math.PI / 9,
+    newVerticalAngle: (Math.PI / 100)
 }
 
 var origo = new Vector3(0,0,0);
@@ -55,25 +57,62 @@ window.addEventListener("keydown", function(e){
 });
 
 function keyLogic(){
+    /*
+    s = hAngle
+    t = vAngle
+    
+    x = r * cos(s) * sin(t)
+    y = r * sin(s) * sin(t)
+    z = r * cos(t)
+    
+    */
+    
+    
     if(keyPressed[37]){ // left
-        keyEventDatas.angle += keyEventDatas.newAngle;
+        keyEventDatas.horizontalAngle += keyEventDatas.newHorizontalAngle;
                 
-        var angle = keyEventDatas.angle;
+        var hAngle = keyEventDatas.horizontalAngle;
+        var vAngle = keyEventDatas.verticalAngle;
         var r = keyEventDatas.r;
                 
-        camera.position.x = r * Math.sin(angle);
-        camera.position.z = r * Math.cos(angle);
+        // camera.position.x = r * Math.sin(hAngle);
+        // camera.position.z = r * Math.cos(hAngle);
+        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+        camera.position.y = r * Math.cos(vAngle);
         camera.lookAt(origo);
     }
-    if(keyPressed[39]){
-        keyEventDatas.angle -= keyEventDatas.newAngle;
+    if(keyPressed[39]){ // right
+        keyEventDatas.horizontalAngle -= keyEventDatas.newHorizontalAngle;
                 
-        var angle = keyEventDatas.angle;
+        var hAngle = keyEventDatas.horizontalAngle;
+        var vAngle = keyEventDatas.verticalAngle;
         var r = keyEventDatas.r;
                 
-        camera.position.x = r * Math.sin(angle);
-        camera.position.z = r * Math.cos(angle);
+        // camera.position.x = r * Math.sin(hAngle);
+        // camera.position.z = r * Math.cos(hAngle);
+        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+        camera.position.y = r * Math.cos(vAngle);
         camera.lookAt(origo);
+    }
+    
+    if(keyPressed[40]){ // down
+        if(Math.PI / 2 > keyEventDatas.verticalAngle + keyEventDatas.newVerticalAngle){
+            keyEventDatas.verticalAngle += keyEventDatas.newVerticalAngle;
+        
+            var hAngle = keyEventDatas.horizontalAngle;
+            var vAngle = keyEventDatas.verticalAngle;
+            var r = keyEventDatas.r;
+            
+            // camera.position.y = r * Math.sin(vAngle);
+            // camera.position.z = r * Math.cos(vAngle);
+            camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+            camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+            camera.position.y = r * Math.cos(vAngle);
+            camera.lookAt(origo);
+                
+        }
     }
     setTimeout(keyLogic, 5);
 }
@@ -204,17 +243,18 @@ function init(){
 	light2.position.set( 0, -1, 0 );
 	scene.add( light2 );
     
-    var angle = keyEventDatas.angle;
-    var r = keyEventDatas.r;
-                
-    camera.position.x = r * Math.sin(angle);
-    camera.position.y = 4;
-    camera.position.z = r * Math.cos(angle);
-    camera.lookAt(origo);
-    
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
+    
+    var hAngle = keyEventDatas.horizontalAngle;
+    var vAngle = keyEventDatas.verticalAngle;
+    var r = keyEventDatas.r;
+                
+        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+        camera.position.y = r * Math.cos(vAngle);
+    camera.lookAt(origo);
 
     generateFieldTable();
 }

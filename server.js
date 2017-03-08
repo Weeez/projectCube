@@ -90,7 +90,7 @@ console.log("what the fuck1");
 io.on('connection', function (socket) {
   console.log("A player joined to the game");
   
-  io.emit('joined', {asd: "asd", fieldTable: fieldTable});
+  socket.emit('joined', {asd: "asd", fieldTable: fieldTable});
   socket.on('joined', function(obj){
     console.log("A player joined to the game with the following id: " + obj.socketId);
   });

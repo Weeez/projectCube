@@ -35,7 +35,7 @@ var keyPressed = {};
 var keyEventDatas = {
     r: 5,
     angle: 0,
-    newAngle: (Math.PI / 15)
+    newAngle: (Math.PI / 150)
 }
 
 var origo = new Vector3(0,0,0);
@@ -50,35 +50,33 @@ document.addEventListener('keyup', function(e){
 }, false);
 
 window.addEventListener("keydown", function(e){
-    if([37,38,39,40].indexOf(e.keyCode) > -1){
-
-        switch(e.keyCode){
-            case 37:
-                keyEventDatas.angle += keyEventDatas.newAngle;
-                
-                var angle = keyEventDatas.angle;
-                var r = keyEventDatas.r;
-                
-                camera.position.x = r * Math.sin(angle);
-                camera.position.z = r * Math.cos(angle);
-                camera.lookAt(origo);
-                break;
-            case 39:
-                keyEventDatas.angle -= keyEventDatas.newAngle;
-                
-                var angle = keyEventDatas.angle;
-                var r = keyEventDatas.r;
-                
-                camera.position.x = r * Math.sin(angle);
-                camera.position.z = r * Math.cos(angle);
-                camera.lookAt(origo);
-                break;
-            default: 
-                break;
-        }
         e.preventDefault();
-    }
+    
 });
+
+function keyLogic(){
+    if(keyPressed[37]){ // left
+        keyEventDatas.angle += keyEventDatas.newAngle;
+                
+        var angle = keyEventDatas.angle;
+        var r = keyEventDatas.r;
+                
+        camera.position.x = r * Math.sin(angle);
+        camera.position.z = r * Math.cos(angle);
+        camera.lookAt(origo);
+    }
+    if(keyPressed[39]){
+        keyEventDatas.angle -= keyEventDatas.newAngle;
+                
+        var angle = keyEventDatas.angle;
+        var r = keyEventDatas.r;
+                
+        camera.position.x = r * Math.sin(angle);
+        camera.position.z = r * Math.cos(angle);
+        camera.lookAt(origo);
+    }
+    setTimeout(keyLogic, 5);
+}
 
 function generateFieldTable(){
     var tmpMesh = createFieldGeometry();
@@ -206,12 +204,14 @@ function init(){
 	light2.position.set( 0, -1, 0 );
 	scene.add( light2 );
     
-    
-    camera.position.z = 5;
+    var angle = keyEventDatas.angle;
+    var r = keyEventDatas.r;
+                
+    camera.position.x = r * Math.sin(angle);
     camera.position.y = 4;
-    camera.position.x = -1;
+    camera.position.z = r * Math.cos(angle);
     camera.lookAt(origo);
-
+    
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
@@ -240,3 +240,7 @@ var render = function () {
     //     fieldElements[i].rotation.z += 0.05;
     // }
 };
+
+window.onload = function(){
+    keyLogic();
+}

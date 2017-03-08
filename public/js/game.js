@@ -33,7 +33,7 @@ var ShaderMaterial = THREE.ShaderMaterial;
 
 var keyPressed = {};
 var keyEventDatas = {
-    r: 5,
+    r: 7,
     horizontalAngle: Math.PI,
     newHorizontalAngle: (Math.PI / 100),
     verticalAngle: Math.PI / 9,
@@ -52,7 +52,7 @@ document.addEventListener('keyup', function(e){
 }, false);
 
 window.addEventListener("keydown", function(e){
-    if(e.keyCode != 116) e.preventDefault();
+    if(e.keyCode != 116 || e.keyCode != 123) e.preventDefault();
 });
 
 function keyLogic(){
@@ -120,7 +120,7 @@ function keyLogic(){
     }
         if(keyPressed[38]){ // up
         var newVal = keyEventDatas.verticalAngle - keyEventDatas.newVerticalAngle;
-        if(Math.PI / 2 > newVal && newVal > 0){
+        if(Math.PI / 2 > newVal /*&& newVal > 0*/){
             keyEventDatas.verticalAngle -= keyEventDatas.newVerticalAngle;
         
             var hAngle = keyEventDatas.horizontalAngle;
@@ -171,8 +171,6 @@ function addAxisCubeGeometry(obj){
     return cube;
 }
 
-var tmp = undefined;
-
 function shaderWtf(){
     var vertexShader = document.getElementById('vertexShader').textContent;
     var fragmentShader = document.getElementById('fragmentShader').textContent;
@@ -210,11 +208,20 @@ function createFieldGeometry(){
     var vertexShader = document.getElementById('vertexShader').textContent;
     var fragmentShader = document.getElementById('fragmentShader').textContent;
     
+    var testTexture = new THREE.TextureLoader().load("pics/test.jpg");
+    var uniform = {
+        texture1: { type: "t", value: testTexture }
+    };
+    
     var fieldGeometry = new BufferGeometry();
     var fieldMaterial = new ShaderMaterial({
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
-        vertexColors: THREE.VertexColors
+        vertexColors: THREE.VertexColors,
+        uniforms : uniform,
+        // color: 0xaaaaaa, 
+        // specular: 0xffffff, 
+        // shininess: 250
         // side: THREE.DoubleSide
     });
     
@@ -229,20 +236,88 @@ function createFieldGeometry(){
     ]);
     
     var colors = new Float32Array([
-        1.0, 0.0, 0.0,
-        1.0, 1.0, 0.0,
-        0.0, 0.0, 1.0,
+        // 1.0, 0.0, 0.0,
+        // 1.0, 1.0, 0.0,
+        // 0.0, 0.0, 1.0,
         
-        1.0, 1.0, 0.0,
-        1.0, 1.0, 1.0,
-        0.0, 0.0, 1.0
+        // 1.0, 1.0, 0.0,
+        // 1.0, 1.0, 1.0,
+        // 0.0, 0.0, 1.0
+        
+        // 0.4, 0.4, 0.4,
+        0.2, 0.2, 0.2,
+        0.2, 0.2, 0.2,
+        0.2, 0.2, 0.2,
+        
+        0.2, 0.2, 0.2,
+        0.2, 0.2, 0.2,
+        // 0.4, 0.4, 0.4,
+        0.2, 0.2, 0.2
     ]);
     
+    var p1 = new Vector3();
+    var p2 = new Vector3();
+    var p3 = new Vector3();
+    
+    var q1 = new Vector3();
+    var q2 = new Vector3();
+    var q3 = new Vector3();
+    
+    p1.set( 0.0, 0.0, 0.0 );
+    p2.set( 1.0, 0.0, 0.0 );
+    p3.set( 0.0, 0.0, -1.0 );
+    
+    q1.set( 1.0, 0.0, 0.0 );
+    q2.set( 1.0, 0.0, -1.0 );
+    q3.set( 0.0, 0.0, -1.0 );
+    
+    var u = new Vector3();
+    var v = new Vector3();
+    var uu = new Vector3();
+    var vv = new Vector3();
+    
+    u.subVectors(p3, p2);
+    v.subVectors(p1, p2);
+    u.cross(v);
+    
+    u.normalize();
+    
+    uu.subVectors(q3,q2);
+    vv.subVectors(q1,q2);
+    uu.cross(vv);
+    
+    uu.normalize();
+    
+    var normals = new Float32Array([
+        u.x, u.y, u.z,
+        u.x, u.y, u.z,
+        u.x, u.y, u.z,
+        
+        uu.x, uu.y, uu.z,
+        uu.x, uu.y, uu.z,
+        uu.x, uu.y, uu.z,
+    ]);
+    
+    var uvs = new Float32Array([
+        0.0, 0.0,
+        1.0, 0.0,
+        1.0, 1.0,
+        0.0, 1.0
+    ]);
+    
+    var uvIndices = new Uint32Array([
+        // 0, 3, 2,
+        0, 1, 2,
+        0, 2, 3
+    ]);
     // function disposeArray() { this.array = null; }
     
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    fieldGeometry.addAttribute('normal', new THREE.BufferAttribute(normals, 3));
+    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
     fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
-    
+    fieldGeometry.setIndex(new THREE.BufferAttribute( uvIndices, 1 ) );
+
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
     // tmpGeo.position.x = obj.position.x;
     // tmpGeo.position.y = obj.position.y;
@@ -259,11 +334,11 @@ function init(){
     
     scene.add(new THREE.AmbientLight( 0x444444 ) );
     var light1 = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    light1.position.set( 1, 1, 1 );
+    light1.position.set( 10, 10, 10 );
 	scene.add( light1 );
 	
 	var light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-	light2.position.set( 0, -1, 0 );
+	light2.position.set( 0, 30, 0 );
 	scene.add( light2 );
     
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
@@ -274,10 +349,17 @@ function init(){
     var vAngle = keyEventDatas.verticalAngle;
     var r = keyEventDatas.r;
                 
-        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-        camera.position.y = r * Math.cos(vAngle);
+    camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+    camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+    camera.position.y = r * Math.cos(vAngle);
     camera.lookAt(origo);
+    
+    var testTexture = new THREE.TextureLoader().load("pics/test.jpg");
+    var testGeometry = new BoxGeometry(1,1,1);
+    var testMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: testTexture } );
+    var testMesh = new Mesh(testGeometry, testMaterial);
+    testMesh.position.y = 0.5;
+    scene.add(testMesh);
 
     generateFieldTable();
 }
@@ -300,7 +382,7 @@ var render = function () {
     stats.update();
     
     // for(var i = 0; i < fieldElements.length; i++){
-    //     fieldElements[i].rotation.z += 0.05;
+    //     if(i%2==0) fieldElements[i].rotation.x += 0.005;
     // }
 };
 

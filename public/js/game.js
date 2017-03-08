@@ -120,7 +120,7 @@ function keyLogic(){
     }
         if(keyPressed[38]){ // up
         var newVal = keyEventDatas.verticalAngle - keyEventDatas.newVerticalAngle;
-        if(Math.PI / 2 > newVal /*&& newVal > 0*/){
+        if(Math.PI / 2 > newVal && newVal > 0){
             keyEventDatas.verticalAngle -= keyEventDatas.newVerticalAngle;
         
             var hAngle = keyEventDatas.horizontalAngle;
@@ -228,11 +228,11 @@ function createFieldGeometry(){
     var vertices = new Float32Array([
         0.0, 0.0, 0.0,
         1.0, 0.0, 0.0,
-        0.0, 0.0, -1.0,
+        1.0, 0.0, 1.0,
+        0.0, 0.0, 1.0,
         
-        1.0, 0.0, 0.0,
-        1.0, 0.0, -1.0,
-        0.0, 0.0, -1.0
+        // 1.0, 0.0, 0.0,
+        // 0.0, 0.0, -1.0
     ]);
     
     var colors = new Float32Array([
@@ -306,17 +306,18 @@ function createFieldGeometry(){
     ]);
     
     var uvIndices = new Uint32Array([
-        // 0, 3, 2,
-        0, 1, 2,
-        0, 2, 3
+        // 0, 2, 1, 
+        // 1, 2, 3
+        0, 2, 1,
+        2, 0, 3
     ]);
     // function disposeArray() { this.array = null; }
     
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
     fieldGeometry.addAttribute('normal', new THREE.BufferAttribute(normals, 3));
-    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
     fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
-    fieldGeometry.setIndex(new THREE.BufferAttribute( uvIndices, 1 ) );
+    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+    fieldGeometry.setIndex(new THREE.BufferAttribute(uvIndices, 1 ));
 
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
     // tmpGeo.position.x = obj.position.x;

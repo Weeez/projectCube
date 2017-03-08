@@ -12,7 +12,7 @@ var fieldElements = [];
 //THREE.js stuffs
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
-var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 30 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -81,6 +81,8 @@ function keyLogic(){
         camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
         camera.position.y = r * Math.cos(vAngle);
         camera.lookAt(origo);
+        
+        // delete keyPressed[37];
     }
     if(keyPressed[39]){ // right
         keyEventDatas.horizontalAngle -= keyEventDatas.newHorizontalAngle;
@@ -95,10 +97,13 @@ function keyLogic(){
         camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
         camera.position.y = r * Math.cos(vAngle);
         camera.lookAt(origo);
+        
+        // delete keyPressed[39];
     }
     
     if(keyPressed[40]){ // down
-        if(Math.PI / 2 > keyEventDatas.verticalAngle + keyEventDatas.newVerticalAngle){
+        var newVal = keyEventDatas.verticalAngle + keyEventDatas.newVerticalAngle;
+        if(Math.PI / 2 > newVal && newVal > 0){
             keyEventDatas.verticalAngle += keyEventDatas.newVerticalAngle;
         
             var hAngle = keyEventDatas.horizontalAngle;
@@ -113,6 +118,26 @@ function keyLogic(){
             camera.lookAt(origo);
                 
         }
+        // delete keyPressed[40];
+    }
+        if(keyPressed[38]){ // up
+        var newVal = keyEventDatas.verticalAngle - keyEventDatas.newVerticalAngle;
+        if(Math.PI / 2 > newVal && newVal > 0){
+            keyEventDatas.verticalAngle -= keyEventDatas.newVerticalAngle;
+        
+            var hAngle = keyEventDatas.horizontalAngle;
+            var vAngle = keyEventDatas.verticalAngle;
+            var r = keyEventDatas.r;
+            
+            // camera.position.y = r * Math.sin(vAngle);
+            // camera.position.z = r * Math.cos(vAngle);
+            camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
+            camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
+            camera.position.y = r * Math.cos(vAngle);
+            camera.lookAt(origo);
+                
+        }
+        // delete keyPressed[38];
     }
     setTimeout(keyLogic, 5);
 }

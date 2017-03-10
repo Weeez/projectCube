@@ -158,14 +158,18 @@ function createFieldGeometry(){
     var vertices = new Float32Array([
         0.0, 0.0, 0.0,
         1.0, 0.0, 0.0,
-        0.5, 1.0, 0.0,
-        // 1.0, 0.0, 1.0,
-        // 0.0, 0.0, 1.0,
+        1.0, 1.0, 0.0,
+        0.0, 1.0, 0.0,
         
-        // 1.0, 0.0, 0.0,
-        // 2.0, 0.0, 0.0,
-        // 2.0, 0.0, 1.0,
-        // 1.0, 0.0, 1.0
+        1.0, 0.0, 0.0,
+        2.0, 0.0, 0.0,
+        2.0, 1.0, 0.0,
+        1.0, 1.0, 0.0,
+        
+        2.0, 0.0, 0.0,
+        3.0, 0.0, 0.0,
+        3.0, 1.0, 0.0,
+        2.0, 1.0, 0.0,
     ]);
     
     var colors = new Float32Array([
@@ -232,39 +236,38 @@ function createFieldGeometry(){
     ]);
     
     var uvs = new Float32Array([
-        0.0, 0.0,
-        1.0, 0.0,
-        1.0, 1.0,
-        0.0, 1.0,
+        0.0, 0.0, //0
+        1.0, 0.0, //1
+        1.0, 1.0, //2
+        0.0, 1.0, //3
         
-        1.0, 0.0,
-        2.0, 0.0,
-        2.0, 1.0,
-        1.0, 1.0
+        0.0, 0.0, //0
+        1.0, 0.0, //1
+        1.0, 1.0, //2
+        0.0, 1.0, //3
+        
+        0.0, 0.0, //0
+        1.0, 0.0, //1
+        1.0, 1.0, //2
+        0.0, 1.0, //3
     ]);
     
     var uvIndices = new Uint32Array([
-        // 0, 2, 1,
-        // 2, 0, 3,
+        0, 1, 2,
+        2, 3, 0,
         
-        //0, 2, 1,
-        //2, 0, 3,
-        
-        0,1,2,
-        
-        // 4 ,5, 6,
-        // 6, 7, 4
-        
-        
-        //2, 0, 4,
-        //0, 2, 5
+        4, 5, 6,
+        6, 7, 4,
+
+        8, 9, 10,
+        10, 11, 8
     ]);
     // function disposeArray() { this.array = null; }
     
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute( vertices, 3));
     fieldGeometry.addAttribute('normal', new THREE.BufferAttribute( normals, 3));
-    fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
-    // fieldGeometry.addAttribute('uv', new THREE.BufferAttribute( uvs, 2));
+    // fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
+    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute( uvs, 2));
     fieldGeometry.setIndex(new THREE.BufferAttribute( uvIndices, 1 ));
 
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);

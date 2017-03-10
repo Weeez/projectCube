@@ -1,6 +1,7 @@
 <script src="js/libs/three.min.js"></script>
 <script src="js/libs/stats.min.js"></script>
 <script src="js/game.js"></script>
+<script src="js/keyLogic.js"></script>
 <script type="x-shader/x-vertex" id="vertexShader">
     varying vec3 in_Color;
     varying vec2 vUv;
@@ -23,8 +24,8 @@
     void main(){
         
         // gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        // gl_FragColor = vec4(in_Color, 1.0);
-        gl_FragColor = texture2D(texture1, vUv);
+        gl_FragColor = vec4(in_Color, 1.0);
+        // gl_FragColor = texture2D(texture1, vUv);
         // gl_FragColor = texture2D(texture1, vec2(0.0, 0.0));
     }
 </script>

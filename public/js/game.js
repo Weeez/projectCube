@@ -34,13 +34,15 @@ var ShaderMaterial = THREE.ShaderMaterial;
 var keyPressed = {};
 var keyEventDatas = {
     r: 7,
-    horizontalAngle: Math.PI,
+    horizontalAngle: (Math.PI / 10000),
     newHorizontalAngle: (Math.PI / 100),
-    verticalAngle: Math.PI / 9,
-    newVerticalAngle: (Math.PI / 100)
+    verticalAngle: (Math.PI / 10000),
+    newVerticalAngle: (Math.PI / 100),
+    slideX : 0,
+    slideZ : 0
 }
 
-var origo = new Vector3(0,0,0);
+var origo = new Vector3(0, 0, 0);
 
 document.addEventListener('keydown', function(e){
     keyPressed[e.keyCode] = true;
@@ -54,91 +56,6 @@ document.addEventListener('keyup', function(e){
 window.addEventListener("keydown", function(e){
     if(e.keyCode != 116 || e.keyCode != 123) e.preventDefault();
 });
-
-function keyLogic(){
-    /*
-    s = hAngle
-    t = vAngle
-    
-    x = r * cos(s) * sin(t)
-    y = r * sin(s) * sin(t)
-    z = r * cos(t)
-    
-    */
-    
-    if(keyPressed[37]){ // left
-        keyEventDatas.horizontalAngle += keyEventDatas.newHorizontalAngle;
-                
-        var hAngle = keyEventDatas.horizontalAngle;
-        var vAngle = keyEventDatas.verticalAngle;
-        var r = keyEventDatas.r;
-                
-        // camera.position.x = r * Math.sin(hAngle);
-        // camera.position.z = r * Math.cos(hAngle);
-        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-        camera.position.y = r * Math.cos(vAngle);
-        camera.lookAt(origo);
-        
-        // delete keyPressed[37];
-    }
-    if(keyPressed[39]){ // right
-        keyEventDatas.horizontalAngle -= keyEventDatas.newHorizontalAngle;
-                
-        var hAngle = keyEventDatas.horizontalAngle;
-        var vAngle = keyEventDatas.verticalAngle;
-        var r = keyEventDatas.r;
-                
-        // camera.position.x = r * Math.sin(hAngle);
-        // camera.position.z = r * Math.cos(hAngle);
-        camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-        camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-        camera.position.y = r * Math.cos(vAngle);
-        camera.lookAt(origo);
-        
-        // delete keyPressed[39];
-    }
-    
-    if(keyPressed[40]){ // down
-        var newVal = keyEventDatas.verticalAngle + keyEventDatas.newVerticalAngle;
-        if(Math.PI / 2 > newVal && newVal > 0){
-            keyEventDatas.verticalAngle += keyEventDatas.newVerticalAngle;
-        
-            var hAngle = keyEventDatas.horizontalAngle;
-            var vAngle = keyEventDatas.verticalAngle;
-            var r = keyEventDatas.r;
-            
-            // camera.position.y = r * Math.sin(vAngle);
-            // camera.position.z = r * Math.cos(vAngle);
-            camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-            camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-            camera.position.y = r * Math.cos(vAngle);
-            camera.lookAt(origo);
-                
-        }
-        // delete keyPressed[40];
-    }
-        if(keyPressed[38]){ // up
-        var newVal = keyEventDatas.verticalAngle - keyEventDatas.newVerticalAngle;
-        if(Math.PI / 2 > newVal && newVal > 0){
-            keyEventDatas.verticalAngle -= keyEventDatas.newVerticalAngle;
-        
-            var hAngle = keyEventDatas.horizontalAngle;
-            var vAngle = keyEventDatas.verticalAngle;
-            var r = keyEventDatas.r;
-            
-            // camera.position.y = r * Math.sin(vAngle);
-            // camera.position.z = r * Math.cos(vAngle);
-            camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-            camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-            camera.position.y = r * Math.cos(vAngle);
-            camera.lookAt(origo);
-                
-        }
-        // delete keyPressed[38];
-    }
-    setTimeout(keyLogic, 5);
-}
 
 function generateFieldTable(){
     var tmpMesh = createFieldGeometry();
@@ -225,14 +142,30 @@ function createFieldGeometry(){
         // side: THREE.DoubleSide
     });
     
+    
+    
+    // 0.0, 0.0, 0.0,
+    // 1.0, 0.0, 0.0,
+    // 1.0, 0.0, 1.0,
+    // 0.0, 0.0, 1.0,
+    var vertexArray = [];
+    for(var i = 0; i < fieldTable.length; i++){
+        for(var j = 0; j < fieldTable[i].length; j++){
+            
+        }
+    }
+    
     var vertices = new Float32Array([
         0.0, 0.0, 0.0,
         1.0, 0.0, 0.0,
-        1.0, 0.0, 1.0,
-        0.0, 0.0, 1.0,
+        0.5, 1.0, 0.0,
+        // 1.0, 0.0, 1.0,
+        // 0.0, 0.0, 1.0,
         
         // 1.0, 0.0, 0.0,
-        // 0.0, 0.0, -1.0
+        // 2.0, 0.0, 0.0,
+        // 2.0, 0.0, 1.0,
+        // 1.0, 0.0, 1.0
     ]);
     
     var colors = new Float32Array([
@@ -302,22 +235,37 @@ function createFieldGeometry(){
         0.0, 0.0,
         1.0, 0.0,
         1.0, 1.0,
-        0.0, 1.0
+        0.0, 1.0,
+        
+        1.0, 0.0,
+        2.0, 0.0,
+        2.0, 1.0,
+        1.0, 1.0
     ]);
     
     var uvIndices = new Uint32Array([
-        // 0, 2, 1, 
-        // 1, 2, 3
-        0, 2, 1,
-        2, 0, 3
+        // 0, 2, 1,
+        // 2, 0, 3,
+        
+        //0, 2, 1,
+        //2, 0, 3,
+        
+        0,1,2,
+        
+        // 4 ,5, 6,
+        // 6, 7, 4
+        
+        
+        //2, 0, 4,
+        //0, 2, 5
     ]);
     // function disposeArray() { this.array = null; }
     
-    fieldGeometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    fieldGeometry.addAttribute('normal', new THREE.BufferAttribute(normals, 3));
+    fieldGeometry.addAttribute('position', new THREE.BufferAttribute( vertices, 3));
+    fieldGeometry.addAttribute('normal', new THREE.BufferAttribute( normals, 3));
     fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
-    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-    fieldGeometry.setIndex(new THREE.BufferAttribute(uvIndices, 1 ));
+    // fieldGeometry.addAttribute('uv', new THREE.BufferAttribute( uvs, 2));
+    fieldGeometry.setIndex(new THREE.BufferAttribute( uvIndices, 1 ));
 
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
     // tmpGeo.position.x = obj.position.x;
@@ -342,17 +290,25 @@ function init(){
 	light2.position.set( 0, 30, 0 );
 	scene.add( light2 );
     
-    scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(0,255,0)"}));
-    scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(255,0,0)"}));
+    scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(255,0,0)"}));
+    scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(0,255,0)"}));
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
+    
+    var asd = addAxisCubeGeometry({x:0.1, y:0.1, z: 0.1, color:"rgba(255,0,255)"});
+    asd.position.x = 1;
+    asd.position.z = 0;
+    asd.position.y = 1;
+    scene.add(asd);
     
     var hAngle = keyEventDatas.horizontalAngle;
     var vAngle = keyEventDatas.verticalAngle;
+    var sin = Math.sin;
+    var cos = Math.cos;
     var r = keyEventDatas.r;
                 
-    camera.position.x = r * Math.cos(hAngle) * Math.sin(vAngle);
-    camera.position.z = r * Math.sin(hAngle) * Math.sin(vAngle);
-    camera.position.y = r * Math.cos(vAngle);
+    camera.position.x = (r * cos(hAngle) * sin(vAngle));
+    camera.position.y = (r * sin(hAngle) * sin(vAngle));
+    camera.position.z = (r * cos(vAngle)) - Math.PI/2;
     camera.lookAt(origo);
     
     var testTexture = new THREE.TextureLoader().load("pics/test.jpg");
@@ -360,9 +316,11 @@ function init(){
     var testMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: testTexture } );
     var testMesh = new Mesh(testGeometry, testMaterial);
     testMesh.position.y = 0.5;
-    scene.add(testMesh);
+    // scene.add(testMesh);
 
-    generateFieldTable();
+
+    scene.add(createFieldGeometry());
+    // generateFieldTable();
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
@@ -386,7 +344,3 @@ var render = function () {
     //     if(i%2==0) fieldElements[i].rotation.x += 0.005;
     // }
 };
-
-window.onload = function(){
-    keyLogic();
-}

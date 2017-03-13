@@ -57,30 +57,6 @@ window.addEventListener("keydown", function(e){
     if(e.keyCode != 116 || e.keyCode != 123) e.preventDefault();
 });
 
-function generateFieldTable(){
-    var tmpMesh = createFieldGeometry();
-    
-    var counter = 0;
-    
-    for(var i = 0; i < fieldTable.length; i++){
-        for(var j = 0; j < fieldTable[i].length; j++){
-            
-            ++counter;
-            
-            var element = fieldTable[i][j];
-            var tmp_Mesh = tmpMesh.clone();
-            tmp_Mesh.position.x = element.position.x;
-            tmp_Mesh.position.y = element.position.y;
-            tmp_Mesh.position.z = element.position.z;
-            scene.add(tmp_Mesh);
-            fieldElements.push(tmp_Mesh);
-            // scene.add(createFieldGeometry(fieldTable[i][j]));
-        }
-    }
-    
-    console.log(counter);
-}
-
 function addAxisCubeGeometry(obj){
     var geometry = new BoxGeometry(obj.x, obj.y, obj.z);
     var material = new Material({color: obj.color, transparent: true, opacity: 0.5});
@@ -125,7 +101,7 @@ function createFieldGeometry(){
     var vertexShader = document.getElementById('vertexShader').textContent;
     var fragmentShader = document.getElementById('fragmentShader').textContent;
     
-    var testTexture = new THREE.TextureLoader().load("pics/test.jpg");
+    var testTexture = new THREE.TextureLoader().load("pics/border.png");
     var uniform = {
         texture1: { type: "t", value: testTexture }
     };
@@ -134,7 +110,7 @@ function createFieldGeometry(){
     var fieldMaterial = new ShaderMaterial({
         vertexShader: vertexShader,
         fragmentShader: fragmentShader,
-        vertexColors: THREE.VertexColors,
+        // vertexColors: THREE.VertexColors,
         uniforms : uniform,
         // color: 0xaaaaaa, 
         // specular: 0xffffff, 
@@ -142,13 +118,8 @@ function createFieldGeometry(){
         // side: THREE.DoubleSide
     });
     
-    
-    // 0.0, 0.0, 0.0,
-    // 1.0, 0.0, 0.0,
-    // 1.0, 0.0, 1.0,
-    // 0.0, 0.0, 1.0,
     var vertexArray = [];
-    var size = 1000;
+    var size = 1001;
     var cubeSize = 1;
     
     for(var i = 0; i < size; i++){

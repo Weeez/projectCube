@@ -3,13 +3,13 @@
 <script src="js/game.js"></script>
 <script src="js/keyLogic.js"></script>
 <script type="x-shader/x-vertex" id="vertexShader">
-    varying vec3 in_Color;
+    // varying vec3 in_Color;
     varying vec2 vUv;
 
     void main(){
         
         vUv = uv;
-        in_Color = color;
+        // in_Color = color;
         
         vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
         gl_Position = projectionMatrix * modelViewPosition;
@@ -18,7 +18,7 @@
 
 <script type="x-shader/x-fragment" id="fragmentShader">
     uniform sampler2D texture1;
-    varying vec3 in_Color;
+    // varying vec3 in_Color;
     varying vec2 vUv;
 
     void main(){

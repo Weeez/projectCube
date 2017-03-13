@@ -30,14 +30,17 @@ var Face3 = THREE.Face3;
 var BoxGeometry = THREE.BoxGeometry;
 var BufferGeometry = THREE.BufferGeometry;
 var ShaderMaterial = THREE.ShaderMaterial;
+var BufferAttribute = THREE.BufferAttribute;
+var AmbientLight = THREE.AmbientLight;
+var DirectionalLight = THREE.DirectionalLight;
 
 var keyPressed = {};
 var keyEventDatas = {
     r: 7,
     horizontalAngle: (Math.PI / 10000),
-    newHorizontalAngle: (Math.PI / 100),
+    newHorizontalAngle: (Math.PI / 500),
     verticalAngle: (Math.PI / 10000),
-    newVerticalAngle: (Math.PI / 100),
+    newVerticalAngle: (Math.PI / 500),
     slideX : 0,
     slideZ : 0
 }
@@ -53,6 +56,13 @@ document.addEventListener('keyup', function(e){
     keyPressed[e.keyCode] = false;
 }, false);
 
+document.addEventListener('mousemove', function(e){
+    keyPressed["mouseMoveX"] = e.movementX;
+    keyPressed["mouseMoveY"] = e.movementY;
+    keyPressed["mouseX"] = e.x;
+    keyPressed["mouseY"] = e.y;
+})
+
 window.addEventListener("keydown", function(e){
     if(e.keyCode != 116 || e.keyCode != 123) e.preventDefault();
 });
@@ -62,39 +72,6 @@ function addAxisCubeGeometry(obj){
     var material = new Material({color: obj.color, transparent: true, opacity: 0.5});
     var cube = new Mesh(geometry, material);
     return cube;
-}
-
-function shaderWtf(){
-    var vertexShader = document.getElementById('vertexShader').textContent;
-    var fragmentShader = document.getElementById('fragmentShader').textContent;
-    
-    var material = new THREE.ShaderMaterial({
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader,
-        side: THREE.DoubleSide
-    });
-    
-    var geometry = new BufferGeometry();
-    
-    var vertices = new Float32Array([
-        -0.5, 0.0, 0.0,
-        0.5, 0.0, 0.0,
-        0.0, 1.0, 0.0
-    ]);
-    
-    geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    
-    var mesh = new THREE.Mesh(geometry,material);
-    // mesh.position.z = -200;
-    // mesh.position.y = -100;
-    
-    mesh.position.x = 0;
-    mesh.position.y = 0;
-    mesh.position.z = 0;
-    
-    tmp = mesh;
-    
-    scene.add(mesh);
 }
 
 function createFieldGeometry(){
@@ -112,6 +89,7 @@ function createFieldGeometry(){
         fragmentShader: fragmentShader,
         // vertexColors: THREE.VertexColors,
         uniforms : uniform,
+        transparent: false,
         // color: 0xaaaaaa, 
         // specular: 0xffffff, 
         // shininess: 250
@@ -128,14 +106,9 @@ function createFieldGeometry(){
         var tmpHalfY = sizeHalf-i;
         for(var j = 0; j < size; j++){
             vertexArray.push((tmpHalfX)+(j*cubeSize),tmpHalfY-1,0);
-            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");
             vertexArray.push((tmpHalfX+cubeSize)+(j*cubeSize),tmpHalfY-1,0);
-            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");
             vertexArray.push((tmpHalfX+cubeSize)+(j*cubeSize),tmpHalfY,0);
-            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");            
             vertexArray.push((tmpHalfX)+(j*cubeSize),tmpHalfY,0);
-            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");            
-            // console.log("");
         }
     }
     
@@ -168,11 +141,7 @@ function createFieldGeometry(){
     }
     
     var uvIndices = new Uint32Array(uvIndicesArray);
-    
-    
-    
     var vertices = new Float32Array(vertexArray);
-    
     var colors = new Float32Array([
         // 1.0, 0.0, 0.0,
         // 1.0, 1.0, 0.0,
@@ -237,16 +206,13 @@ function createFieldGeometry(){
     ]);
     
 
-    fieldGeometry.addAttribute('position', new THREE.BufferAttribute( vertices, 3));
-    fieldGeometry.addAttribute('normal', new THREE.BufferAttribute( normals, 3));
+    fieldGeometry.addAttribute('position', new BufferAttribute( vertices, 3));
+    fieldGeometry.addAttribute('normal', new BufferAttribute( normals, 3));
     // fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
-    fieldGeometry.addAttribute('uv', new THREE.BufferAttribute( uvs, 2));
-    fieldGeometry.setIndex(new THREE.BufferAttribute( uvIndices, 1 ));
+    fieldGeometry.addAttribute('uv', new BufferAttribute( uvs, 2));
+    fieldGeometry.setIndex(new BufferAttribute( uvIndices, 1 ));
 
     var tmpGeo = new Mesh(fieldGeometry, fieldMaterial);
-    // tmpGeo.position.x = obj.position.x;
-    // tmpGeo.position.y = obj.position.y;
-    // tmpGeo.position.z = obj.position.z;
     return tmpGeo;
 }
 
@@ -257,24 +223,18 @@ function init(){
     stats = new Stats();
     container.appendChild(stats.dom);
     
-    scene.add(new THREE.AmbientLight( 0x444444 ) );
-    var light1 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+    scene.add(new AmbientLight( 0x444444 ) );
+    var light1 = new DirectionalLight( 0xffffff, 0.5 );
     light1.position.set( 10, 10, 10 );
 	scene.add( light1 );
 	
-	var light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+	var light2 = new DirectionalLight( 0xffffff, 1.5 );
 	light2.position.set( 0, 0, 30 );
 	scene.add( light2 );
     
-    scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(255,0,0)"}));
-    scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(0,255,0)"}));
-    scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"}));
-    
-    var asd = addAxisCubeGeometry({x:0.1, y:0.1, z: 0.1, color:"rgba(255,0,255)"});
-    asd.position.x = 1;
-    asd.position.z = 0;
-    asd.position.y = 1;
-    scene.add(asd);
+    scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(255,0,0)"})); // x axis 
+    scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(0,255,0)"})); // y axis
+    scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"})); // z axis
     
     var hAngle = keyEventDatas.horizontalAngle;
     var vAngle = keyEventDatas.verticalAngle;
@@ -291,12 +251,11 @@ function init(){
     var testGeometry = new BoxGeometry(1,1,1);
     var testMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: testTexture } );
     var testMesh = new Mesh(testGeometry, testMaterial);
-    testMesh.position.y = 0.5;
-    // scene.add(testMesh);
+    testMesh.position.z = 0.5;
+    scene.add(testMesh);
 
 
     scene.add(createFieldGeometry());
-    // generateFieldTable();
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
@@ -304,8 +263,6 @@ socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     socket.emit('joined', {socketId: socket.id});
     
     init();
-    
-    // shaderWtf();
     
     render();
 });
@@ -315,8 +272,4 @@ var render = function () {
 
     renderer.render(scene, camera);
     stats.update();
-    
-    // for(var i = 0; i < fieldElements.length; i++){
-    //     if(i%2==0) fieldElements[i].rotation.x += 0.005;
-    // }
 };

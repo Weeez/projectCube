@@ -57,7 +57,7 @@ function keyLogic(){
     
     if(keyPressed[37]){ // left
         var newVal = keyEventDatas.horizontalAngle - keyEventDatas.newHorizontalAngle;
-        // if(newVal < Math.PI / 2 && newVal > (-1 * Math.PI / 2)){
+        if(newVal < Math.PI / 2 && newVal > (-1 * Math.PI / 2)){
             keyEventDatas.horizontalAngle -= keyEventDatas.newHorizontalAngle;
             var r = keyEventDatas.r;
             var vAngle = keyEventDatas.verticalAngle;
@@ -67,7 +67,7 @@ function keyLogic(){
             camera.position.z = r * cos(hAngle);
         
             camera.lookAt(origo);
-        // }
+        }
         // camera.position.x = (r * cos(hAngle) * sin(vAngle));
         // camera.position.y = (r * sin(hAngle) * sin(vAngle));
         // camera.position.z = (r * cos(vAngle));
@@ -75,7 +75,7 @@ function keyLogic(){
     }
     if(keyPressed[39]){ // right
         var newVal = keyEventDatas.horizontalAngle + keyEventDatas.newHorizontalAngle;
-        // if(newVal < Math.PI / 2 && newVal > (-1 * Math.PI / 2)){
+        if(newVal < Math.PI / 2 && newVal > (-1 * Math.PI / 2)){
             keyEventDatas.horizontalAngle += keyEventDatas.newHorizontalAngle;
             var r = keyEventDatas.r;
             var vAngle = keyEventDatas.verticalAngle;
@@ -92,7 +92,7 @@ function keyLogic(){
         // camera.position.z = (r * cos(vAngle));
         // camera.lookAt(origo);
         // camera.rotateY(Math.PI / 18000);
-        // }
+        }
     }
     setTimeout(keyLogic, 5);
 }
@@ -100,16 +100,3 @@ function keyLogic(){
 window.onload = function(){
     keyLogic();
 }
-
-        // 0.0, 0.0, 0.0,
-        // 1.0, 0.0, 0.0,
-        // 1.0, 1.0, 0.0,
-        // 0.0, 1.0, 0.0,
-        
-        // // 1.0, 0.0, 0.0,
-        // 2.0, 0.0, 0.0,
-        // 2.0, 1.0, 0.0,
-        // // 1.0, 1.0, 0.0
-        
-        // 3.0, 0.0, 0.0,
-        // 3.0, 1.0, 0,0

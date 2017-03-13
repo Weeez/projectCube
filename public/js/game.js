@@ -12,7 +12,7 @@ var fieldElements = [];
 //THREE.js stuffs
 var scene = new THREE.Scene();
 // var camera = new THREE.PerspectiveCamera(1, window.innerWidth / window.innerHeight, 10, 100);
-var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1,20 );
+var camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 100 );
 var renderer = new THREE.WebGLRenderer({
     antialias: true
 });
@@ -149,28 +149,59 @@ function createFieldGeometry(){
     // 1.0, 0.0, 1.0,
     // 0.0, 0.0, 1.0,
     var vertexArray = [];
-    for(var i = 0; i < fieldTable.length; i++){
-        for(var j = 0; j < fieldTable[i].length; j++){
-            
+    var size = 1000;
+    var cubeSize = 1;
+    
+    for(var i = 0; i < size; i++){
+        var sizeHalf = size / 2;
+        var tmpHalfX = -1*sizeHalf;
+        var tmpHalfY = sizeHalf-i;
+        for(var j = 0; j < size; j++){
+            vertexArray.push((tmpHalfX)+(j*cubeSize),tmpHalfY-1,0);
+            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");
+            vertexArray.push((tmpHalfX+cubeSize)+(j*cubeSize),tmpHalfY-1,0);
+            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");
+            vertexArray.push((tmpHalfX+cubeSize)+(j*cubeSize),tmpHalfY,0);
+            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");            
+            vertexArray.push((tmpHalfX)+(j*cubeSize),tmpHalfY,0);
+            // console.log("pushed: (" + vertexArray[vertexArray.length-3] + ", " + vertexArray[vertexArray.length-2] + ", " + vertexArray[vertexArray.length-1] + ")");            
+            // console.log("");
         }
     }
     
-    var vertices = new Float32Array([
-        0.0, 0.0, 0.0,
-        1.0, 0.0, 0.0,
-        1.0, 1.0, 0.0,
-        0.0, 1.0, 0.0,
+    var uvsArray = [];
+    for(var i = 0; i < size * size; i++){
+        uvsArray.push(0.0, 0.0);
+        uvsArray.push(1.0, 0.0);
+        uvsArray.push(1.0, 1.0);
+        uvsArray.push(0.0, 1.0);
+    }
+    
+    var uvs = new Float32Array(uvsArray);
+    
+    var indexSize = 4;
+    var indX = 0;
+    var indY = 1;
+    var indZ = 2;
+    var indW = 3;
+    
+    var uvIndicesArray = [];
+    
+    for(var i = 0; i < size*size; i++){
+        uvIndicesArray.push(indX + (i*indexSize));
+        uvIndicesArray.push(indY + (i*indexSize));
+        uvIndicesArray.push(indZ + (i*indexSize));
         
-        1.0, 0.0, 0.0,
-        2.0, 0.0, 0.0,
-        2.0, 1.0, 0.0,
-        1.0, 1.0, 0.0,
-        
-        2.0, 0.0, 0.0,
-        3.0, 0.0, 0.0,
-        3.0, 1.0, 0.0,
-        2.0, 1.0, 0.0,
-    ]);
+        uvIndicesArray.push(indZ + (i*indexSize));
+        uvIndicesArray.push(indW + (i*indexSize));
+        uvIndicesArray.push(indX + (i*indexSize));
+    }
+    
+    var uvIndices = new Uint32Array(uvIndicesArray);
+    
+    
+    
+    var vertices = new Float32Array(vertexArray);
     
     var colors = new Float32Array([
         // 1.0, 0.0, 0.0,
@@ -202,11 +233,11 @@ function createFieldGeometry(){
     
     p1.set( 0.0, 0.0, 0.0 );
     p2.set( 1.0, 0.0, 0.0 );
-    p3.set( 0.0, 0.0, -1.0 );
+    p3.set( 0.0, -1.0, 0.0 );
     
     q1.set( 1.0, 0.0, 0.0 );
-    q2.set( 1.0, 0.0, -1.0 );
-    q3.set( 0.0, 0.0, -1.0 );
+    q2.set( 1.0, -1.0, 0.0 );
+    q3.set( 0.0, -1.0, 0.0 );
     
     var u = new Vector3();
     var v = new Vector3();
@@ -235,35 +266,7 @@ function createFieldGeometry(){
         uu.x, uu.y, uu.z,
     ]);
     
-    var uvs = new Float32Array([
-        0.0, 0.0, //0
-        1.0, 0.0, //1
-        1.0, 1.0, //2
-        0.0, 1.0, //3
-        
-        0.0, 0.0, //0
-        1.0, 0.0, //1
-        1.0, 1.0, //2
-        0.0, 1.0, //3
-        
-        0.0, 0.0, //0
-        1.0, 0.0, //1
-        1.0, 1.0, //2
-        0.0, 1.0, //3
-    ]);
-    
-    var uvIndices = new Uint32Array([
-        0, 1, 2,
-        2, 3, 0,
-        
-        4, 5, 6,
-        6, 7, 4,
 
-        8, 9, 10,
-        10, 11, 8
-    ]);
-    // function disposeArray() { this.array = null; }
-    
     fieldGeometry.addAttribute('position', new THREE.BufferAttribute( vertices, 3));
     fieldGeometry.addAttribute('normal', new THREE.BufferAttribute( normals, 3));
     // fieldGeometry.addAttribute('color', new THREE.BufferAttribute( colors, 3 ));
@@ -290,7 +293,7 @@ function init(){
 	scene.add( light1 );
 	
 	var light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
-	light2.position.set( 0, 30, 0 );
+	light2.position.set( 0, 0, 30 );
 	scene.add( light2 );
     
     scene.add(addAxisCubeGeometry({x:1000, y:0.1, z: 0.1, color:"rgba(255,0,0)"}));

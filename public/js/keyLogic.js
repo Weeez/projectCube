@@ -65,19 +65,19 @@ function keyLogic(){
         }
     }
     // down
-    if(keyPressed[40]){ 
+    else if(keyPressed[40]){ 
         if(movementStarted.direction != "up"){
             cubeAndCamMove("down");
         }
     }
     // left
-    if(keyPressed[37]){ 
+    else if(keyPressed[37]){ 
         if(movementStarted.direction != "right"){
             cubeAndCamMove("left");
         }
     }
     // right
-    if(keyPressed[39]){ 
+    else if(keyPressed[39]){ 
         if(movementStarted.direction != "left"){
             cubeAndCamMove("right");
         }

@@ -5,6 +5,8 @@ var windowHeight = window.innerHeight;
 var scrollerWidth = 5;
 
 var container, stats;
+var thisSocket = undefined;
+var playerCubes = {};
 
 var fieldTable = [];
 var fieldElements = [];
@@ -36,13 +38,11 @@ var DirectionalLight = THREE.DirectionalLight;
 
 var keyPressed = {};
 var keyEventDatas = {
-    r: 7,
+    r: 17,
     horizontalAngle: (Math.PI / 10000),
-    newHorizontalAngle: (Math.PI / 500),
-    verticalAngle: (Math.PI / 10000),
-    newVerticalAngle: (Math.PI / 500),
-    slideX : 0,
-    slideZ : 0
+    // newHorizontalAngle: (Math.PI / 500),
+    verticalAngle: (Math.PI / 1000000),
+    // newVerticalAngle: (Math.PI / 500),
 }
 
 var origo = new Vector3(0, 0, 0);
@@ -72,6 +72,16 @@ function addAxisCubeGeometry(obj){
     var material = new Material({color: obj.color, transparent: true, opacity: 0.5});
     var cube = new Mesh(geometry, material);
     return cube;
+}
+
+function createPlayerGeometry(socketId){
+    var playerTexture = new THREE.TextureLoader().load("pics/aaa.png");
+    var playerGeometry = new BoxGeometry(1,1,1);
+    var playerMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: playerTexture } );
+    var playerMesh = new Mesh(playerGeometry, playerMaterial);
+    playerMesh.position.z = 0.5;
+    playerCubes[socketId] = playerMesh;
+    return playerMesh;
 }
 
 function createFieldGeometry(){
@@ -236,30 +246,24 @@ function init(){
     scene.add(addAxisCubeGeometry({x:0.1, y:1000, z: 0.1, color:"rgba(0,255,0)"})); // y axis
     scene.add(addAxisCubeGeometry({x:0.1, y:0.1, z: 1000, color:"rgba(0,0,255)"})); // z axis
     
+    scene.add(createFieldGeometry());
+    scene.add(createPlayerGeometry(thisSocket));
+    
     var hAngle = keyEventDatas.horizontalAngle;
     var vAngle = keyEventDatas.verticalAngle;
     var sin = Math.sin;
     var cos = Math.cos;
     var r = keyEventDatas.r;
                 
-    camera.position.x = (r * cos(hAngle) * sin(vAngle));
-    camera.position.y = (r * sin(hAngle) * sin(vAngle));
-    camera.position.z = (r * cos(vAngle)) - Math.PI/2;
-    camera.lookAt(origo);
-    
-    var testTexture = new THREE.TextureLoader().load("pics/test.jpg");
-    var testGeometry = new BoxGeometry(1,1,1);
-    var testMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: testTexture } );
-    var testMesh = new Mesh(testGeometry, testMaterial);
-    testMesh.position.z = 0.5;
-    scene.add(testMesh);
-
-
-    scene.add(createFieldGeometry());
+    camera.position.x = playerCubes[thisSocket].position.x + (r * cos(hAngle) * sin(vAngle));
+    camera.position.y = playerCubes[thisSocket].position.y +(r * sin(hAngle) * sin(vAngle));
+    camera.position.z = (r * cos(vAngle));
+    camera.lookAt(playerCubes[thisSocket].position);
 }
 
 socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
     fieldTable = obj.fieldTable;
+    thisSocket = socket.id;
     socket.emit('joined', {socketId: socket.id});
     
     init();

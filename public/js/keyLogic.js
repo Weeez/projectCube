@@ -4,12 +4,48 @@ var keyEventDatas = keyEventDatas;
 var origo = origo;
 var windowWidth = windowWidth;
 var windowHeight = windowHeight;
+var playerCubes = playerCubes;
+var thisSocket = thisSocket;
 var sin = Math.sin;
 var cos = Math.cos;
 var center = {
         x: windowWidth/2,
         y: windowHeight/2
     }
+var movementSpeed = 0.03;    
+    
+var movementStarted = {
+    isMoving: false,
+    direction: "",
+};    
+
+function cubeAndCamMove(direction){
+    movementStarted.isMoving = true;
+    movementStarted.direction = direction;
+    if(direction == "up"){
+        playerCubes[thisSocket].position.y += movementSpeed;
+    }
+    else if(direction == "down"){
+        playerCubes[thisSocket].position.y -= movementSpeed;
+    }
+    else if(direction == "left"){
+        playerCubes[thisSocket].position.x -= movementSpeed;
+    }
+    else if(direction == "right"){
+        playerCubes[thisSocket].position.x += movementSpeed;
+    }
+    
+    
+    var r = keyEventDatas.r;
+    var vAngle = keyEventDatas.verticalAngle;
+    var hAngle = keyEventDatas.horizontalAngle;
+        
+    camera.position.x = playerCubes[thisSocket].position.x + (r * cos(hAngle) * sin(vAngle));
+    camera.position.y = playerCubes[thisSocket].position.y + (r * sin(hAngle) * sin(vAngle));
+    camera.position.z = (r * cos(vAngle));
+        
+    camera.lookAt(playerCubes[thisSocket].position);
+}
 
 function keyLogic(){
     /*
@@ -22,14 +58,42 @@ function keyLogic(){
     
     */
 
-    if(keyPressed[38]){ // up
+    // up
+    if(keyPressed[38]){ 
+        if(movementStarted.direction != "down"){
+            cubeAndCamMove("up");
+        }
     }
-    if(keyPressed[40]){ // down
+    // down
+    if(keyPressed[40]){ 
+        if(movementStarted.direction != "up"){
+            cubeAndCamMove("down");
+        }
     }
-    if(keyPressed[37]){ // left
+    // left
+    if(keyPressed[37]){ 
+        if(movementStarted.direction != "right"){
+            cubeAndCamMove("left");
+        }
     }
-    if(keyPressed[39]){ // right
+    // right
+    if(keyPressed[39]){ 
+        if(movementStarted.direction != "left"){
+            cubeAndCamMove("right");
+        }
     }
+    
+    if(movementStarted.isMoving){
+        cubeAndCamMove(movementStarted.direction);
+    }
+    
+    if(keyPressed[80]){ // P (pause)
+        movementStarted.isMoving = !movementStarted.isMoving;
+        // movementStarted.direction = "";
+        delete keyPressed[80];
+    }
+    
+    /*
     if(keyPressed["mouseMoveX"] > 0){ // right
         // if(keyPressed["mouseX"] > center.x){
             var angleUnit = ((Math.PI ) / (windowWidth / 2));
@@ -41,9 +105,9 @@ function keyLogic(){
             var vAngle = keyEventDatas.verticalAngle;
             var hAngle = keyEventDatas.horizontalAngle;
 
-            camera.position.y = (r * cos(hAngle) * sin(vAngle));
-            camera.position.x = (r * sin(hAngle) * sin(vAngle));
-            camera.position.z = (r * cos(vAngle));
+             camera.position.x = (r * cos(hAngle) * sin(vAngle));
+             camera.position.y = (r * sin(hAngle) * sin(vAngle));
+             camera.position.z = (r * cos(vAngle));
         
             camera.lookAt(origo);
         // }
@@ -59,8 +123,8 @@ function keyLogic(){
             var vAngle = keyEventDatas.verticalAngle;
             var hAngle = keyEventDatas.horizontalAngle;
 
-            camera.position.y = (r * cos(hAngle) * sin(vAngle));
-            camera.position.x = (r * sin(hAngle) * sin(vAngle));
+            camera.position.x = (r * cos(hAngle) * sin(vAngle));
+            camera.position.y = (r * sin(hAngle) * sin(vAngle));
             camera.position.z = (r * cos(vAngle));
         
             camera.lookAt(origo);
@@ -77,8 +141,8 @@ function keyLogic(){
             var vAngle = keyEventDatas.verticalAngle;
             var hAngle = keyEventDatas.horizontalAngle;
 
-            camera.position.y = (r * cos(hAngle) * sin(vAngle));
-            camera.position.x = (r * sin(hAngle) * sin(vAngle));
+            camera.position.x = (r * cos(hAngle) * sin(vAngle));
+            camera.position.y = (r * sin(hAngle) * sin(vAngle));
             camera.position.z = (r * cos(vAngle));
         
             camera.lookAt(origo);
@@ -95,13 +159,14 @@ function keyLogic(){
             var vAngle = keyEventDatas.verticalAngle;
             var hAngle = keyEventDatas.horizontalAngle;
 
-            camera.position.y = (r * cos(hAngle) * sin(vAngle));
-            camera.position.x = (r * sin(hAngle) * sin(vAngle));
+            camera.position.x = (r * cos(hAngle) * sin(vAngle));
+            camera.position.y = (r * sin(hAngle) * sin(vAngle));
             camera.position.z = (r * cos(vAngle));
         
             camera.lookAt(origo);
         // }
     }
+    */
     setTimeout(keyLogic, 5);
 }
 

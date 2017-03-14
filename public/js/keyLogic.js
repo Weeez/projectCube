@@ -20,31 +20,106 @@ var movementStarted = {
 };    
 
 function cubeAndCamMove(direction){
-    movementStarted.isMoving = true;
-    movementStarted.direction = direction;
-    if(direction == "up"){
-        playerCubes[thisSocket].position.y += movementSpeed;
-    }
-    else if(direction == "down"){
-        playerCubes[thisSocket].position.y -= movementSpeed;
-    }
-    else if(direction == "left"){
-        playerCubes[thisSocket].position.x -= movementSpeed;
-    }
-    else if(direction == "right"){
-        playerCubes[thisSocket].position.x += movementSpeed;
+    
+    var pos = playerCubes[thisSocket].position;
+    
+    var intervalHorizontalFrom = Math.floor(pos.x);
+    var intervalVerticalFrom = Math.floor(pos.y);
+    
+    var intervalHorizontalTo = intervalHorizontalFrom + 1;
+    var intervalVerticalTo = intervalVerticalFrom + 1;
+    
+    var isDirChangeable = false;
+    var radius = 0.5;
+    
+    var newValueX = undefined;
+    var newValueY = undefined;
+    if(movementStarted.isMoving){
+        if(direction == "up" || direction == "down"){
+            var middlePoint = ((intervalHorizontalFrom + intervalHorizontalTo) / 2) + 0.5;
+            if(movementStarted.direction == "left"){
+                newValueX = (pos.x - movementSpeed);
+                if(direction == "up" || direction == "down"){
+                    isDirChangeable = newValueX > middlePoint - radius && newValueX < middlePoint + radius;
+                    if(isDirChangeable) newValueX = middlePoint;
+                }
+            }
+            if(movementStarted.direction == "right" ){
+                newValueX = (pos.x + movementSpeed);
+                if(direction == "up" || direction == "down"){
+                    isDirChangeable = newValueX > middlePoint - radius && newValueX < middlePoint + radius;
+                    if(isDirChangeable) newValueX = middlePoint;
+                }
+            }
+            if(movementStarted.direction == "up" || movementStarted.direction == "down"){
+                isDirChangeable = true;
+                newValueX = undefined;
+            }
+        }
+        if(direction == "left" || direction == "right"){
+            var middlePoint = ((intervalVerticalFrom + intervalVerticalTo) / 2) + 0.5;
+            if(movementStarted.direction == "down"){
+                newValueY = (pos.y - movementSpeed);
+                if(direction == "left" || direction == "right"){
+                    isDirChangeable = newValueY > middlePoint - radius && newValueY < middlePoint + radius;
+                    if(isDirChangeable) newValueY = middlePoint;
+                }
+            }
+            if(movementStarted.direction == "up" ){
+                newValueY = (pos.y + movementSpeed);
+                if(direction == "left" || direction == "right"){
+                    isDirChangeable = newValueY > middlePoint - radius && newValueY < middlePoint + radius;
+                    if(isDirChangeable) newValueY = middlePoint;
+                }
+            }
+            if(movementStarted.direction == "left" || movementStarted.direction == "right"){
+                isDirChangeable = true;
+                newValueY = undefined;
+            }
+        }
+    }else{
+        isDirChangeable = true;
     }
     
-    
-    var r = keyEventDatas.r;
-    var vAngle = keyEventDatas.verticalAngle;
-    var hAngle = keyEventDatas.horizontalAngle;
+    if(isDirChangeable){
+        movementStarted.isMoving = true;
+        movementStarted.direction = direction;
+        if(direction == "up"){
+            playerCubes[thisSocket].position.y += movementSpeed;
+            if(newValueX){
+                playerCubes[thisSocket].position.x = newValueX;
+            }
+        }
+        else if(direction == "down"){
+            playerCubes[thisSocket].position.y -= movementSpeed;
+            if(newValueX){
+                playerCubes[thisSocket].position.x = newValueX;
+            }
+        }
+        else if(direction == "left"){
+            playerCubes[thisSocket].position.x -= movementSpeed;
+            if(newValueY){
+                playerCubes[thisSocket].position.y = newValueY;
+            }
+        }
+        else if(direction == "right"){
+            playerCubes[thisSocket].position.x += movementSpeed;
+            if(newValueY){
+                playerCubes[thisSocket].position.y = newValueY;
+            }
+        }
         
-    camera.position.x = playerCubes[thisSocket].position.x + (r * cos(hAngle) * sin(vAngle));
-    camera.position.y = playerCubes[thisSocket].position.y + (r * sin(hAngle) * sin(vAngle));
-    camera.position.z = (r * cos(vAngle));
         
-    camera.lookAt(playerCubes[thisSocket].position);
+        var r = keyEventDatas.r;
+        var vAngle = keyEventDatas.verticalAngle;
+        var hAngle = keyEventDatas.horizontalAngle;
+            
+        camera.position.x = playerCubes[thisSocket].position.x + (r * cos(hAngle) * sin(vAngle));
+        camera.position.y = playerCubes[thisSocket].position.y + (r * sin(hAngle) * sin(vAngle));
+        camera.position.z = (r * cos(vAngle));
+            
+        camera.lookAt(playerCubes[thisSocket].position);
+    }
 }
 
 function keyLogic(){

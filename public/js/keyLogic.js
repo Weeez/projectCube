@@ -63,24 +63,28 @@ function keyLogic(){
         if(movementStarted.direction != "down"){
             cubeAndCamMove("up");
         }
+        delete keyPressed[38];
     }
     // down
     else if(keyPressed[40]){ 
         if(movementStarted.direction != "up"){
             cubeAndCamMove("down");
         }
+        delete keyPressed[40];
     }
     // left
     else if(keyPressed[37]){ 
         if(movementStarted.direction != "right"){
             cubeAndCamMove("left");
         }
+        delete keyPressed[37];
     }
     // right
     else if(keyPressed[39]){ 
         if(movementStarted.direction != "left"){
             cubeAndCamMove("right");
         }
+        delete keyPressed[39];
     }
     
     if(movementStarted.isMoving){

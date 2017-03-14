@@ -39,9 +39,9 @@ var DirectionalLight = THREE.DirectionalLight;
 var keyPressed = {};
 var keyEventDatas = {
     r: 17,
-    horizontalAngle: (Math.PI / 10000),
+    horizontalAngle: (Math.PI / 2),
     // newHorizontalAngle: (Math.PI / 500),
-    verticalAngle: (Math.PI / 1000000),
+    verticalAngle: -1 * (Math.PI / 17),
     // newVerticalAngle: (Math.PI / 500),
 }
 

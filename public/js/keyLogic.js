@@ -14,7 +14,6 @@ var center = {
         y: windowHeight/2
     }
 var movementSpeed = 0.03;    
-    
 var movementStarted = {
     isMoving: false,
     direction: "",
@@ -109,6 +108,7 @@ function keyLogic(){
         
     }
 
+    debugging();
     setTimeout(keyLogic, 5);
 }
 

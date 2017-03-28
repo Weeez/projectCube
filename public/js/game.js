@@ -7,9 +7,11 @@ var scrollerWidth = 5;
 var container, stats;
 var thisSocket = undefined;
 var playerCubes = {};
+var playerPos = {};
 
-var fieldTable = [];
+var fieldTableSize = 0;
 var fieldElements = [];
+var lastPressedKey = undefined;
 
 //THREE.js stuffs
 var scene = new THREE.Scene();
@@ -63,8 +65,17 @@ document.addEventListener('mousemove', function(e){
 })
 
 window.addEventListener("keydown", function(e){
-    if(e.keyCode != 116 || e.keyCode != 123) e.preventDefault();
+    // if(e.keyCode == 116 || e.keyCode == 123){
+    //     e.preventDefault()
+    // };
+    lastPressedKey = e.keyCode;
 });
+
+function removeLoading(){
+    var parent = document.getElementById('loading').parentNode;
+    var child = document.getElementById('loading');
+    parent.removeChild(child);
+}
 
 function addAxisCubeGeometry(obj){
     var geometry = new BoxGeometry(obj.x, obj.y, obj.z);
@@ -78,6 +89,9 @@ function createPlayerGeometry(socketId){
     var playerGeometry = new BoxGeometry(1,1,1);
     var playerMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, specular: 0x050505, map: playerTexture } );
     var playerMesh = new Mesh(playerGeometry, playerMaterial);
+    // playerMesh.position.z = 0.5;
+    playerMesh.position.x = playerPos.x;
+    playerMesh.position.y = playerPos.y;
     playerMesh.position.z = 0.5;
     playerCubes[socketId] = playerMesh;
     return playerMesh;
@@ -106,7 +120,7 @@ function createFieldGeometry(){
     });
     
     var vertexArray = [];
-    var size = 1001;
+    var size = fieldTableSize;
     var cubeSize = 1;
     
     for(var i = 0; i < size; i++){
@@ -260,13 +274,16 @@ function init(){
     camera.lookAt(playerCubes[thisSocket].position);
 }
 
-socket.on('joined', function(obj){//TODO: error code 503 can be a pain in my ass
-    fieldTable = obj.fieldTable;
+socket.on('joined', function(obj){ //TODO: error code 503 can be a pain in my ass
     thisSocket = socket.id;
+    fieldTableSize = obj.fieldTableSize;
+    playerPos = obj.playerPos;    
+    
     socket.emit('joined', {socketId: socket.id});
     
     init();
     
+    removeLoading();
     render();
 });
 

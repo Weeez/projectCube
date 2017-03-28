@@ -50,36 +50,43 @@ var server = app.listen(port, function () {
 
 
 //game logic
-var fieldTableSize = 5;
-var fieldTable = [];
+var fieldTableSize = 1000;
+// var fieldTable = [];
 
-function generateFieldTablePositions(){
-    var posX = (-1*(Math.floor(fieldTableSize/2)))-0.5;
-    var posZ = (-1*(Math.floor(fieldTableSize/2)))+0.5;
-    
-    var counter = 0;
-    
-    for(var i = 0; i < fieldTableSize; i++){
-        var row = [];
-        for(var j = 0; j < fieldTableSize; j++){
-            ++counter;
-            var field = {};
-            field.position = {
-              x: posX+i,
-              y: 0,
-              z: posZ+j
-            };
-            row.push(field);
-        }
-        fieldTable.push(row);
-    }
-    
-    console.log(counter);
-    // return fieldTable;
+function generatePlayerPosition(){
+  return {
+    x: (Math.floor(Math.random() * (Math.random()*(fieldTableSize/2) - 1))) + 0.5,
+    y: Math.floor(Math.random() * (Math.random()*(fieldTableSize/2))) + 0.5
+  };
 }
 
+// function generateFieldTablePositions(){
+//     var posX = (-1*(Math.floor(fieldTableSize/2)))-0.5;
+//     var posZ = (-1*(Math.floor(fieldTableSize/2)))+0.5;
+    
+//     var counter = 0;
+    
+//     for(var i = 0; i < fieldTableSize; i++){
+//         var row = [];
+//         for(var j = 0; j < fieldTableSize; j++){
+//             ++counter;
+//             var field = {};
+//             field.position = {
+//               x: posX+i,
+//               y: 0,
+//               z: posZ+j
+//             };
+//             row.push(field);
+//         }
+//         fieldTable.push(row);
+//     }
+    
+//     console.log(counter);
+//     // return fieldTable;
+// }
+
 function init(){
-  generateFieldTablePositions();  
+  // generateFieldTablePositions();  
 }
 
 init();
@@ -89,8 +96,9 @@ var io = require('socket.io').listen(server);
 console.log("what the fuck1");
 io.on('connection', function (socket) {
   console.log("A player joined to the game");
+  var playerPos = generatePlayerPosition();
   
-  socket.emit('joined', {asd: "asd", fieldTable: fieldTable});
+  socket.emit('joined', {asd: "asd", fieldTableSize: fieldTableSize, playerPos: playerPos});
   socket.on('joined', function(obj){
     console.log("A player joined to the game with the following id: " + obj.socketId);
   });

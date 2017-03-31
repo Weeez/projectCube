@@ -93,7 +93,6 @@ init();
 
 var io = require('socket.io').listen(server);
 
-console.log("what the fuck1");
 io.on('connection', function (socket) {
   console.log("A player joined to the game");
   var playerPos = generatePlayerPosition();
@@ -103,4 +102,4 @@ io.on('connection', function (socket) {
     console.log("A player joined to the game with the following id: " + obj.socketId);
   });
 });
-console.log("what the fuck2");
+console.log("server started");
